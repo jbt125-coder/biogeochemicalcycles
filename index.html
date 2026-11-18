@@ -10,10 +10,15 @@
 html,body{margin:0;padding:0;background:#070b1a;color:#e8eefc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-text-size-adjust:100%}
 body{background:#070b1a radial-gradient(circle at 50% -10%,#1b2a5a 0%,#070b1a 65%) no-repeat}
 #app{max-width:680px;margin:0 auto;padding:10px 12px 30px;padding-top:calc(10px + env(safe-area-inset-top));padding-bottom:calc(30px + env(safe-area-inset-bottom))}
-.top{display:flex;align-items:center;justify-content:space-between}
+.top{position:relative;display:flex;align-items:center;justify-content:space-between}
+.tr{display:flex;align-items:center;flex-shrink:0;justify-content:flex-end}
+.cog{flex-shrink:0;margin-left:6px;width:34px;height:34px;border-radius:17px;background:#16204a;border:1px solid #2c3d80;color:#fff;font-size:18px;line-height:1;padding:0;cursor:pointer;font-family:inherit}
+.menu{display:none;position:absolute;right:0;top:42px;z-index:30;width:230px;background:#0f1733;border:1px solid #2c3d80;border-radius:14px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.menu.open{display:block}
+.menu .lb{margin:6px 0 0}
 .logo{min-width:0;font-size:15px;letter-spacing:1.2px;margin:4px 0;font-weight:900;color:#29d3ff;text-shadow:0 0 10px rgba(41,211,255,.6)}
 .logo span{color:#b6ff3b;text-shadow:0 0 10px rgba(182,255,59,.5)}
-.chip{flex-shrink:0;margin-left:6px;font-size:11px;background:#16204a;border:1px solid #2c3d80;border-radius:20px;padding:4px 9px;color:#9fb3ff;white-space:nowrap;max-width:55%;overflow:hidden;text-overflow:ellipsis}
+.chip{flex-shrink:0;margin-left:6px;font-size:11px;background:#16204a;border:1px solid #2c3d80;border-radius:20px;padding:4px 9px;color:#9fb3ff;white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis}
 .card{background:#0f1733;border:1px solid #233063;border-radius:16px;padding:14px;margin:10px 0}
 .hero{text-align:center;padding:18px 14px}
 .hero h2{margin:6px 0 4px;font-size:26px;line-height:1.1;font-weight:900;color:#fff;text-shadow:0 0 14px rgba(41,211,255,.7)}
@@ -104,7 +109,15 @@ input,select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border
 <div id="app">
   <div class="top">
     <div class="logo" data-t="logo">THE <span>BIOGEOCHEMICAL</span> CYCLES</div>
-    <div class="chip" id="who" style="display:none"></div>
+    <div class="tr">
+      <div class="chip" id="who" style="display:none"></div>
+      <button class="cog" id="cog" aria-label="Settings / Ajustes">&#x2699;&#xFE0F;</button>
+    </div>
+    <div class="menu" id="menu">
+      <label>Language / Idioma</label>
+      <button class="btn small lb" data-l="en">English</button>
+      <button class="btn small lb" data-l="es">Espa&ntilde;ol</button>
+    </div>
   </div>
 
   <div id="s_login" style="display:none">
@@ -821,7 +834,9 @@ function shuffle(a) { var i, j, t; for (i = a.length - 1; i > 0; i--) { j = Math
 
 /* ---------- SCREENS ---------- */
 var SCR = ['s_login', 's_hub', 's_cyc', 's_report'];
+var curScr = '';
 function show(id) {
+  curScr = id;
   var i; for (i = 0; i < SCR.length; i++) { $(SCR[i]).style.display = (SCR[i] === id) ? 'block' : 'none'; }
   if (id !== 's_cyc') stopAnim();
   var w = $('who');
@@ -844,7 +859,10 @@ function applyLang() {
 }
 (function () {
   var b = document.querySelectorAll('.lb'), i;
-  for (i = 0; i < b.length; i++) b[i].onclick = function () { LANG = this.getAttribute('data-l'); S.lang = LANG; save(); $('loginErr').innerHTML = ''; sTap(); applyLang(); };
+  for (i = 0; i < b.length; i++) b[i].onclick = function (ev) { ev.stopPropagation(); setLang(this.getAttribute('data-l')); };
+  $('cog').onclick = function (ev) { ev.stopPropagation(); sTap(); $('menu').className = $('menu').className === 'menu open' ? 'menu' : 'menu open'; };
+  $('menu').onclick = function (ev) { ev.stopPropagation(); };
+  document.addEventListener('click', function () { $('menu').className = 'menu'; });
 })();
 applyLang();
 $('btnStart').onclick = function () {
@@ -878,12 +896,12 @@ $('btnSwitch').onclick = function () {
 };
 
 /* ---------- CYCLE SCREEN ---------- */
-var cur = null, mode = 'learn', stepI = 0, revealed = {}, zoomed = false;
+var curI = 0, cur = null, mode = 'learn', stepI = 0, revealed = {}, zoomed = false;
 var parts = [], animOn = false, lastTs = 0;
 
 function openCycle(i) {
   sTap();
-  cur = loc(CY[i]); revealed = {}; zoomed = false;
+  curI = i; cur = loc(CY[i]); revealed = {}; zoomed = false;
   var st = cs(cur.id), k;
   if (st.learn) { for (k = 0; k < cur.slots.length; k++) revealed[cur.slots[k].n] = 1; }
   $('cTitle').innerHTML = '<span style="color:' + cur.col + '">' + cur.icon + ' ' + cur.name + '</span>';
@@ -932,18 +950,49 @@ function setMode(m) {
   if (m === 'label' && !st.learn) { toast(L('needLearn')); sBad(); return; }
   if (m === 'quiz' && !st.lab) { toast(L('needLabel')); sBad(); return; }
   mode = m;
-  var tabs = [['learn', L('tLearn'), true], ['label', L('tLabel'), st.learn], ['quiz', L('tQuiz'), st.lab]], h = '', i, on;
-  for (i = 0; i < 3; i++) {
-    on = tabs[i][0] === m;
-    h += '<button class="tab' + (tabs[i][2] ? '' : ' lock') + '" style="' + (on ? 'background:' + cur.col + ';color:#06102a;border-color:' + cur.col : '') + '" onclick="setMode(\'' + tabs[i][0] + '\')">' + (tabs[i][2] ? '' : '&#x1F512; ') + tabs[i][1] + '</button>';
-  }
-  $('tabs').innerHTML = h;
+  renderTabs();
   $('diabox').style.display = (m === 'quiz') ? 'none' : 'block';
   $('btnZoom').style.display = (m === 'quiz') ? 'none' : 'block';
   if (m === 'learn') { stepI = 0; renderLearn(); }
   else if (m === 'label') { startLabel(); }
   else { startQuiz(); }
   window.scrollTo(0, 0);
+}
+function renderTabs() {
+  var st = cs(cur.id), m = mode;
+  var tabs = [['learn', L('tLearn'), true], ['label', L('tLabel'), st.learn], ['quiz', L('tQuiz'), st.lab]], h = '', i, on;
+  for (i = 0; i < 3; i++) {
+    on = tabs[i][0] === m;
+    h += '<button class="tab' + (tabs[i][2] ? '' : ' lock') + '" style="' + (on ? 'background:' + cur.col + ';color:#06102a;border-color:' + cur.col : '') + '" onclick="setMode(\'' + tabs[i][0] + '\')">' + (tabs[i][2] ? '' : '&#x1F512; ') + tabs[i][1] + '</button>';
+  }
+  $('tabs').innerHTML = h;
+}
+
+/* Switch language from the cog menu (or sign-in screen) without losing progress */
+function setLang(l) {
+  $('menu').className = 'menu';
+  if (l === LANG) return;
+  var old = cur, tr = {}, k, i;
+  LANG = l; S.lang = l; save(); sTap(); applyLang(); $('loginErr').innerHTML = '';
+  if (curScr === 's_hub') renderHub();
+  else if (curScr === 's_report') renderReport();
+  else if (curScr === 's_cyc' && cur) {
+    cur = loc(CY[curI]);
+    $('cTitle').innerHTML = '<span style="color:' + cur.col + '">' + cur.icon + ' ' + cur.name + '</span>';
+    buildDiagram(); renderTabs();
+    $('btnZoom').style.display = (mode === 'quiz') ? 'none' : 'block';
+    if (mode === 'learn') renderLearn();
+    else if (mode === 'label') {
+      /* translate placed words: each word is the answer to some box, so map old answer -> new answer */
+      for (i = 0; i < old.slots.length; i++) tr[old.slots[i].a] = cur.slots[i].a;
+      for (k in placed) { if (placed.hasOwnProperty(k)) placed[k] = tr[placed[k]] || placed[k]; }
+      if (sel) sel = tr[sel] || null;
+      setFlows('all', true);
+      renderSlotsLabel(checked === true || checked === 'done');
+      renderLabelPanel(checked === 'done' ? Lf('allOk', cur.slots.length) : '');
+    }
+    else if (Q) renderQ();
+  }
 }
 
 /* flows + particles */
@@ -1106,9 +1155,10 @@ function startQuiz() {
 function renderQ() {
   var st = cs(cur.id), h = '', i;
   if (!Q.queue.length) {
-    var tot = cur.quiz.length, firstTime = !st.quiz;
-    if (firstTime) { st.quiz = true; st.qFirst = Q.first; st.qTot = tot; save(); }
-    sWin();
+    if (Q.ft === undefined) Q.ft = !st.quiz;
+    var tot = cur.quiz.length, firstTime = Q.ft;
+    if (firstTime && !st.quiz) { st.quiz = true; st.qFirst = Q.first; st.qTot = tot; save(); }
+    if (!Q.won) { Q.won = true; sWin(); }
     h += '<div class="stepn">' + L('qDone') + '</div><div class="big" style="color:' + cur.col + '">' + Q.first + ' / ' + tot + '</div>';
     h += '<div class="hint" style="text-align:center">' + L('firstTry') + (firstTime ? '' : '<br>' + Lf('practice', st.qFirst, st.qTot)) + '</div>';
     h += '<button class="btn" id="qHub" style="background:' + cur.col + '">' + (allDone() ? L('allDoneBtn') : L('backHub')) + '</button>';
