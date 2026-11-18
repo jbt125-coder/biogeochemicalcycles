@@ -167,6 +167,7 @@ input,select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border
     <div class="shot" data-t="shot">&#x1F4F8; Take a SCREENSHOT of this page and submit it on Canvas.</div>
     <div class="page" id="page"></div>
     <button class="btn" id="btnPdf" data-t="pdf">&#x2B07;&#xFE0F; Download PDF copy</button>
+    <div class="hint" data-t="pdfH" style="text-align:center;margin-top:8px"></div>
   </div>
 </div>
 <div id="toast"></div>
@@ -605,7 +606,11 @@ var UI = {
     rep: '&#x1F4C4; Get My Report', repLock: '&#x1F512; Report unlocks after all 4 quizzes',
     sw: 'Not you? Change student', sw2: 'Tap again to ERASE progress and change student',
     backC: '&larr; Cycles', zoom: '&#x1F50D; Zoom', fit: '&#x1F50D; Fit', myRep: 'My Report',
-    shot: '&#x1F4F8; Take a SCREENSHOT of this page and submit it on Canvas.', pdf: '&#x2B07;&#xFE0F; Download PDF copy',
+    shot: '&#x1F4F8; Take a SCREENSHOT of this page and submit it on Canvas.', pdf: '&#x2B07;&#xFE0F; Download PDF (4 pages)',
+    pdfH: 'Page 1: report &bull; Pages 2-3: your filled-in diagrams &bull; Page 4: one-page summary. Save it to your phone!',
+    p2T: 'Completed Diagrams: Nitrogen & Carbon', p3T: 'Completed Diagrams: Water & Phosphorus', p4T: 'One-Page Summary',
+    p4Row: '{a}: Quiz {b}, Labels {c}', pg: 'Page {a} of {b}', noDia: '(diagram could not be drawn)',
+    pInside: 'Page 2: Nitrogen and Carbon diagrams. Page 3: Water and Phosphorus diagrams. Page 4: one-page summary.',
     learn: 'Learn', label: 'Label', quiz: 'Quiz', tLearn: '1. Learn', tLabel: '2. Label', tQuiz: '3. Quiz',
     needLearn: 'Finish Learn first!', needLabel: 'Finish Label first!',
     learnN: 'LEARN &bull; {a} of {b}', box: 'Worksheet box #', bonus: 'Bonus term', back: '&larr; Back', next: 'Next &rarr;',
@@ -639,7 +644,11 @@ var UI = {
     rep: '&#x1F4C4; Ver mi informe', repLock: '&#x1F512; El informe se desbloquea al terminar las 4 pruebas',
     sw: '\u00BFNo eres t\u00FA? Cambiar de estudiante', sw2: 'Toca otra vez para BORRAR el progreso y cambiar de estudiante',
     backC: '&larr; Ciclos', zoom: '&#x1F50D; Ampliar', fit: '&#x1F50D; Ajustar', myRep: 'Mi informe',
-    shot: '&#x1F4F8; Toma una CAPTURA DE PANTALLA de esta p\u00E1gina y entr\u00E9gala en Canvas.', pdf: '&#x2B07;&#xFE0F; Descargar copia en PDF',
+    shot: '&#x1F4F8; Toma una CAPTURA DE PANTALLA de esta p\u00E1gina y entr\u00E9gala en Canvas.', pdf: '&#x2B07;&#xFE0F; Descargar PDF (4 p\u00E1ginas)',
+    pdfH: 'P\u00E1gina 1: informe &bull; P\u00E1ginas 2-3: tus diagramas completados &bull; P\u00E1gina 4: resumen de una p\u00E1gina. \u00A1Gu\u00E1rdalo en tu tel\u00E9fono!',
+    p2T: 'Diagramas completados: nitr\u00F3geno y carbono', p3T: 'Diagramas completados: agua y f\u00F3sforo', p4T: 'Resumen de una p\u00E1gina',
+    p4Row: '{a}: Prueba {b}, R\u00F3tulos {c}', pg: 'P\u00E1gina {a} de {b}', noDia: '(no se pudo dibujar el diagrama)',
+    pInside: 'P\u00E1gina 2: diagramas de nitr\u00F3geno y carbono. P\u00E1gina 3: agua y f\u00F3sforo. P\u00E1gina 4: resumen de una p\u00E1gina.',
     learn: 'Aprender', label: 'Rotular', quiz: 'Prueba', tLearn: '1. Aprender', tLabel: '2. Rotular', tQuiz: '3. Prueba',
     needLearn: '\u00A1Primero termina Aprender!', needLabel: '\u00A1Primero termina Rotular!',
     learnN: 'APRENDER &bull; {a} de {b}', box: 'Casilla de la hoja #', bonus: 'T\u00E9rmino extra', back: '&larr; Atr\u00E1s', next: 'Siguiente &rarr;',
@@ -1222,14 +1231,99 @@ function renderReport() {
   h += '</table><div class="tot">' + L('total') + ' ' + t[0] + ' / ' + t[1] + ' (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)</div>';
   h += '<div class="ft">' + L('rFoot') + '</div></div>';
   $('page').innerHTML = h;
+  prepDiagrams();
 }
 
-/* Minimal one-page PDF writer (Helvetica, no libraries) */
+/* ---------- FILLED-IN DIAGRAM IMAGES (for the PDF) ---------- */
+/* One answer box drawn in SVG, shrinking or wrapping the text to fit. */
+function boxSvg(s) {
+  var n = s.n + '.', a = s.a, cw = 0.58, fs = 7.2, pad = 3, l1 = a, l2 = '', k, best, mid, o;
+  if ((n.length + 1 + a.length) * fs * cw > s.w - pad) {
+    if (s.h >= 20 && a.indexOf(' ') > 0) {
+      mid = a.length / 2; best = -1;
+      for (k = 0; k < a.length; k++) { if (a.charAt(k) === ' ' && (best < 0 || Math.abs(k - mid) < Math.abs(best - mid))) best = k; }
+      l1 = a.slice(0, best); l2 = a.slice(best + 1);
+      fs = Math.min(fs, (s.w - pad) / (Math.max(n.length + 1 + l1.length, l2.length) * cw), (s.h - 3) / 2.25);
+    } else {
+      fs = (s.w - pad) / ((n.length + 1 + a.length) * cw);
+    }
+  }
+  o = '<rect x="' + s.x + '" y="' + s.y + '" width="' + s.w + '" height="' + s.h + '" rx="2" fill="#c9ffd4" stroke="#0a8a2a" stroke-width="1.2"/>';
+  var ty = l2 ? s.y + s.h / 2 - fs * 0.2 : s.y + s.h / 2 + fs * 0.35;
+  o += '<text x="' + (s.x + 1.5) + '" y="' + ty.toFixed(2) + '" font-size="' + fs.toFixed(2) + '" font-weight="bold" font-family="Arial,Helvetica,sans-serif" fill="#111"><tspan fill="#c4001a">' + n + '</tspan> ' + esc(l1) + '</text>';
+  if (l2) o += '<text x="' + (s.x + 1.5) + '" y="' + (ty + fs * 1.1).toFixed(2) + '" font-size="' + fs.toFixed(2) + '" font-weight="bold" font-family="Arial,Helvetica,sans-serif" fill="#111">' + esc(l2) + '</text>';
+  return o;
+}
+function diagramSvg(c) {
+  var o = '<svg xmlns="http://www.w3.org/2000/svg" width="' + c.W + '" height="' + c.H + '" viewBox="0 0 ' + c.W + ' ' + c.H + '">' + defs(c.extraDefs) + c.scene(), i;
+  for (i = 0; i < c.slots.length; i++) o += boxSvg(c.slots[i]);
+  return o + '</svg>';
+}
+function diagramJpeg(c, cb) {
+  var img = new Image(), sc = 3;
+  img.onload = function () {
+    try {
+      var cv = document.createElement('canvas'), g;
+      cv.width = c.W * sc; cv.height = c.H * sc; g = cv.getContext('2d');
+      g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
+      g.drawImage(img, 0, 0, cv.width, cv.height);
+      cb({ w: cv.width, h: cv.height, data: atob(cv.toDataURL('image/jpeg', 0.9).split(',')[1]) });
+    } catch (e) { cb(null); }
+  };
+  img.onerror = function () { cb(null); };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(diagramSvg(c));
+}
+/* Builds all four images once per language; callbacks wait until ready. */
+var DIMG = { lang: '', imgs: null, busy: false, wait: [] };
+function dFlush() { var w = DIMG.wait, k; DIMG.wait = []; for (k = 0; k < w.length; k++) w[k](); }
+function prepDiagrams(cb) {
+  if (cb) DIMG.wait.push(cb);
+  if (DIMG.imgs && DIMG.lang === LANG) { dFlush(); return; }
+  if (DIMG.busy) return;
+  DIMG.busy = true;
+  var lang = LANG, out = {}, i = 0;
+  (function next() {
+    if (i >= CY.length) {
+      DIMG.busy = false;
+      if (lang !== LANG) { prepDiagrams(); return; }
+      DIMG.imgs = out; DIMG.lang = lang; dFlush(); return;
+    }
+    var c = loc(CY[i++]);
+    diagramJpeg(c, function (r) { out[c.id] = r; next(); });
+  })();
+}
+
+/* ---------- PDF (Helvetica, no libraries): 1 report, 2-3 diagrams, 4 one-page summary ---------- */
 function pdfStr(s) { return String(s).replace(/[^\x20-\x7E\xA0-\xFF]/g, '?').replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
+function cyById(id) { var i; for (i = 0; i < CY.length; i++) { if (CY[i].id === id) return loc(CY[i]); } return null; }
 function makePdf() {
-  var c = [], t = totals(), i, st, y, vx = LANG === 'es' ? 175 : 130;
+  var pages = [], c, t = totals(), I = DIMG.imgs || {}, i, st, y, vx = LANG === 'es' ? 175 : 130, NP = 4;
+  var pct = Math.round(t[0] / Math.max(1, t[1]) * 100);
   function txt(x, yy, s, sz, bold, col) { c.push((col || '0 0 0') + ' rg BT /' + (bold ? 'F2' : 'F1') + ' ' + sz + ' Tf ' + x + ' ' + yy + ' Td (' + pdfStr(s) + ') Tj ET'); }
   function rect(x, yy, w, h, col, stroke) { c.push((stroke ? col + ' RG 0.8 w ' : col + ' rg ') + x + ' ' + yy + ' ' + w + ' ' + h + ' re ' + (stroke ? 'S' : 'f')); }
+  function newPage() { c = []; pages.push(c); txt(500, 28, Lf('pg', pages.length, NP), 9, 0, '0.4 0.4 0.4'); }
+  function header(title) {
+    rect(0, 738, 612, 54, '0.07 0.11 0.25');
+    txt(40, 764, title, 18, 1, '1 1 1');
+    txt(40, 748, S.name + '   -   ' + L('rPer') + ' ' + S.per, 10, 0, '0.62 0.85 1');
+  }
+  /* image placed by its top edge; returns its height */
+  function pic(id, x, top, w) {
+    var cy = cyById(id), h = w * cy.H / cy.W, yy = top - h;
+    if (I[id]) c.push('q ' + w + ' 0 0 ' + h.toFixed(2) + ' ' + x + ' ' + yy.toFixed(2) + ' cm /Im_' + id + ' Do Q');
+    else { rect(x, yy, w, h, '0.95 0.95 0.95'); txt(x + 10, yy + h / 2, L('noDia'), 11, 0, '0.4 0.4 0.4'); }
+    rect(x, yy, w, h, '0.6 0.6 0.6', 1);
+    return h;
+  }
+  function bigPair(title, a, b, w) {
+    var x = (612 - w) / 2, top = 720;
+    newPage(); header(title);
+    txt(x, top - 4, cyById(a).name, 13, 1); top -= 12; top -= pic(a, x, top, w) + 26;
+    txt(x, top - 4, cyById(b).name, 13, 1); top -= 12; pic(b, x, top, w);
+  }
+
+  /* Page 1: full report */
+  newPage();
   rect(0, 700, 612, 92, '0.07 0.11 0.25');
   txt(40, 752, L('rTitle'), 24, 1, '1 1 1');
   txt(40, 726, L('pSub'), 12, 0, '0.62 0.85 1');
@@ -1250,19 +1344,46 @@ function makePdf() {
     txt(495, y + 9, st.qFirst + '/' + st.qTot, 12, 1);
   }
   rect(40, 540, 532, 26, '0.5 0.5 0.5', 1);
-  txt(40, y - 34, L('total') + ' ' + t[0] + ' / ' + t[1] + '  (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)', 15, 1);
+  txt(40, y - 34, L('total') + ' ' + t[0] + ' / ' + t[1] + '  (' + pct + '%)', 15, 1);
   txt(40, y - 58, L('pFoot'), 11, 0, '0.3 0.3 0.3');
+  txt(40, y - 90, L('pInside'), 11, 0, '0.3 0.3 0.3');
   txt(40, 60, L('pSubmit'), 11, 0, '0.3 0.3 0.3');
-  var stream = c.join('\n');
-  var objs = [
-    '<< /Type /Catalog /Pages 2 0 R >>',
-    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>',
-    '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream',
-    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
-    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'
-  ];
-  var out = '%PDF-1.4\n', offs = [], k;
+
+  /* Pages 2 and 3: big filled-in diagrams */
+  bigPair(L('p2T'), 'nitrogen', 'carbon', 480);
+  bigPair(L('p3T'), 'water', 'phos', 400);
+
+  /* Page 4: one-page summary */
+  newPage(); header(L('p4T'));
+  txt(40, 712, L('rName'), 13, 1); txt(vx - 10, 712, S.name, 13, 0);
+  txt(40, 694, L('rPer'), 13, 1); txt(vx - 10, 694, S.per, 13, 0);
+  txt(40, 676, L('rComp'), 13, 1); txt(vx - 10, 676, fmtTime(S.doneAt), 13, 0);
+  txt(40, 650, L('total') + ' ' + t[0] + ' / ' + t[1] + '  (' + pct + '%)', 15, 1);
+  var grid = [['water', 36, 620], ['carbon', 314, 620], ['nitrogen', 36, 425], ['phos', 314, 425]], gw = 262, cc;
+  for (i = 0; i < grid.length; i++) {
+    cc = cyById(grid[i][0]); st = cs(cc.id);
+    txt(grid[i][1], grid[i][2], Lf('p4Row', cc.name, st.qFirst + '/' + st.qTot, st.labOk >= 0 ? st.labOk + '/' + st.labN : '-'), 9.5, 1);
+    pic(cc.id, grid[i][1], grid[i][2] - 7, gw);
+  }
+
+  /* Assemble objects */
+  var objs = ['<< /Type /Catalog /Pages 2 0 R >>', ''], kids = [], xo = '', k, id, im, s, cn, pn;
+  function add(o) { objs.push(o); return objs.length; }
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  for (k = 0; k < CY.length; k++) {
+    id = CY[k].id; im = I[id]; if (!im) continue;
+    xo += '/Im_' + id + ' ' + add('<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + im.data.length + ' >>\nstream\n' + im.data + '\nendstream') + ' 0 R ';
+  }
+  var res = '<< /Font << /F1 3 0 R /F2 4 0 R >> /XObject << ' + xo + '>> >>';
+  for (k = 0; k < pages.length; k++) {
+    s = pages[k].join('\n');
+    cn = add('<< /Length ' + s.length + ' >>\nstream\n' + s + '\nendstream');
+    pn = add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources ' + res + ' /Contents ' + cn + ' 0 R >>');
+    kids.push(pn + ' 0 R');
+  }
+  objs[1] = '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + kids.length + ' >>';
+  var out = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n', offs = [];
   for (k = 0; k < objs.length; k++) { offs.push(out.length); out += (k + 1) + ' 0 obj\n' + objs[k] + '\nendobj\n'; }
   var xr = out.length;
   out += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n';
@@ -1270,7 +1391,7 @@ function makePdf() {
   out += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xr + '\n%%EOF';
   return out;
 }
-$('btnPdf').onclick = function () {
+function savePdf() {
   try {
     var data = makePdf(), bytes = new Uint8Array(data.length), bi;
     for (bi = 0; bi < data.length; bi++) bytes[bi] = data.charCodeAt(bi) & 255;
@@ -1278,8 +1399,15 @@ $('btnPdf').onclick = function () {
     var a = document.createElement('a');
     a.href = url; a.download = 'BiogeochemicalCycles_' + S.name.replace(/[^A-Za-z0-9]+/g, '_') + '_P' + S.per + '.pdf';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
     sGood();
   } catch (e) { toast(L('pdfErr')); }
+}
+$('btnPdf').onclick = function () {
+  var btn = this;
+  if (btn.disabled) return;
+  btn.disabled = true;
+  prepDiagrams(function () { btn.disabled = false; savePdf(); });
 };
 
 /* ---------- BOOT ---------- */
