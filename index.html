@@ -1,1 +1,987 @@
-doc
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#070b1a">
+<title>The Biogeochemical Cycles</title>
+<style>
+html,body{margin:0;padding:0;background:#070b1a;color:#e8eefc;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-text-size-adjust:100%}
+body{background:#070b1a radial-gradient(circle at 50% -10%,#1b2a5a 0%,#070b1a 65%) no-repeat}
+#app{max-width:680px;margin:0 auto;padding:10px 12px 30px;padding-top:calc(10px + env(safe-area-inset-top));padding-bottom:calc(30px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between}
+.logo{min-width:0;font-size:15px;letter-spacing:1.2px;margin:4px 0;font-weight:900;color:#29d3ff;text-shadow:0 0 10px rgba(41,211,255,.6)}
+.logo span{color:#b6ff3b;text-shadow:0 0 10px rgba(182,255,59,.5)}
+.chip{flex-shrink:0;margin-left:6px;font-size:11px;background:#16204a;border:1px solid #2c3d80;border-radius:20px;padding:4px 9px;color:#9fb3ff;white-space:nowrap;max-width:55%;overflow:hidden;text-overflow:ellipsis}
+.card{background:#0f1733;border:1px solid #233063;border-radius:16px;padding:14px;margin:10px 0}
+.hero{text-align:center;padding:18px 14px}
+.hero h2{margin:6px 0 4px;font-size:26px;line-height:1.1;font-weight:900;color:#fff;text-shadow:0 0 14px rgba(41,211,255,.7)}
+.hero p{margin:6px 0;color:#9fb3ff;font-size:14px;line-height:1.4}
+.ics{font-size:34px;letter-spacing:6px}
+label{font-size:13px;color:#9fb3ff;font-weight:700}
+input,select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border-radius:12px;border:1px solid #2c3d80;background:#0a1128;color:#fff;margin:6px 0 12px;-webkit-appearance:none;appearance:none}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:800;color:#06102a;background:#29d3ff;margin-top:8px;cursor:pointer;font-family:inherit}
+.btn.ghost{background:transparent;color:#9fb3ff;border:1px solid #2c3d80}
+.btn.small{padding:9px;font-size:14px}
+.btn[disabled]{opacity:.35}
+.row{display:flex;gap:8px}
+.row .btn{flex:1}
+.grid{display:-webkit-box;display:flex;flex-wrap:wrap;justify-content:space-between}
+.cc{width:48.5%;box-sizing:border-box;border-radius:16px;padding:12px;background:#0f1733;border:2px solid #233063;color:#fff;margin-bottom:10px;cursor:pointer;text-align:left;font-family:inherit}
+.cc .ic{font-size:30px}
+.cc h3{margin:4px 0 6px;font-size:15px}
+.cc .st{font-size:12px;line-height:1.6;color:#c9d4ff}
+.cc .st i{font-style:normal;opacity:.5}
+.err{color:#ff6b8b;font-size:13px;min-height:16px}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0}
+.back{background:#16204a;border:1px solid #2c3d80;color:#fff;border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700;font-family:inherit}
+.ctitle{min-width:0;font-size:18px;font-weight:900;flex:1}
+.tabs{display:flex;gap:6px;margin:6px 0 8px}
+.tab{flex:1;padding:10px 4px;border-radius:12px;background:#0f1733;border:1px solid #233063;color:#9fb3ff;font-weight:800;font-size:13px;text-align:center;font-family:inherit}
+.tab.lock{opacity:.35}
+#diabox{position:relative}
+#diawrap{position:relative;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;border:2px solid #233063;background:#fff}
+#dia{position:relative;width:100%}
+#dia svg{display:block;width:100%;height:auto}
+#ov{position:absolute;left:0;top:0;right:0;bottom:0}
+.zoom{position:absolute;right:6px;top:6px;z-index:3;background:rgba(7,11,26,.75);color:#fff;border:1px solid #2c3d80;border-radius:10px;font-size:12px;font-weight:800;padding:5px 8px;font-family:inherit}
+.slot{white-space:nowrap;position:absolute;box-sizing:border-box;background:#fff;border:1.5px solid #222;border-radius:3px;color:#111;display:flex;align-items:center;padding:0 .25em;line-height:1.02;font-weight:700;overflow:hidden;cursor:pointer;font-family:Arial,Helvetica,sans-serif}
+.slot b{color:#c4001a;margin-right:.25em}
+.slot.rev{background:#fff8d6}
+.slot.hot{border-color:#ff2d95;background:#fff0a8;-webkit-animation:pulse .8s infinite alternate;animation:pulse .8s infinite alternate}
+.slot.ok{background:#c9ffd4;border-color:#0a8a2a}
+.slot.bad{background:#ffd0d0;border-color:#d00;-webkit-animation:shake .35s;animation:shake .35s}
+.slot.tgt{border:1.5px dashed #ff2d95}
+@-webkit-keyframes pulse{from{box-shadow:0 0 0 1px #ff2d95}to{box-shadow:0 0 0 3px #ff2d95,0 0 12px #ff2d95}}
+@keyframes pulse{from{box-shadow:0 0 0 1px #ff2d95}to{box-shadow:0 0 0 3px #ff2d95,0 0 12px #ff2d95}}
+@-webkit-keyframes shake{0%,100%{-webkit-transform:translateX(0)}30%{-webkit-transform:translateX(-3px)}70%{-webkit-transform:translateX(3px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-3px)}70%{transform:translateX(3px)}}
+.fl{fill:none;stroke:none;pointer-events:none}
+.fl.on{stroke:#ff2d95;stroke-width:2.2;stroke-dasharray:5 5;opacity:.9;-webkit-animation:dash .7s linear infinite;animation:dash .7s linear infinite}
+@-webkit-keyframes dash{to{stroke-dashoffset:-10}}
+@keyframes dash{to{stroke-dashoffset:-10}}
+.stepn{font-size:12px;color:#9fb3ff;font-weight:700}
+.dots{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px}
+.dot{width:9px;height:9px;border-radius:5px;background:#233063}
+.dot.on{background:#fff}
+.term{font-size:23px;font-weight:900;margin:2px 0 6px;line-height:1.15}
+.wb{display:inline-block;font-size:11px;font-weight:800;padding:3px 8px;border-radius:10px;background:#ff2d95;color:#fff;margin:0 4px 6px 0}
+.def{font-size:15.5px;line-height:1.5}
+.def .eq{display:block;margin:8px 0;padding:8px;border-radius:8px;background:#0a1128;font-weight:700;text-align:center;font-size:14px}
+.dyk{margin-top:10px;font-size:14px;background:#0a1128;border-left:4px solid #b6ff3b;border-radius:8px;padding:8px 10px;line-height:1.45}
+.why li{margin:6px 0}
+.why ul{padding-left:20px;margin:6px 0}
+.bank{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.w{padding:9px 12px;border-radius:20px;background:#16204a;border:1.5px solid #2c3d80;font-weight:700;font-size:14px;color:#fff;font-family:inherit}
+.w.sel{background:#ff2d95;border-color:#ff2d95}
+.hint{font-size:13.5px;color:#9fb3ff;line-height:1.4}
+.q{font-size:17px;font-weight:700;line-height:1.38;margin:6px 0 10px}
+.opt{display:block;width:100%;text-align:left;padding:13px;border-radius:12px;border:1.5px solid #2c3d80;background:#0a1128;color:#fff;font-size:15px;margin:7px 0;font-family:inherit;line-height:1.3}
+.opt.ok{background:#0d4d26;border-color:#2bff7a}
+.opt.bad{background:#5a1020;border-color:#ff4d6d}
+.fb{font-size:14.5px;line-height:1.45;margin-top:8px;padding:10px;border-radius:10px;background:#0a1128}
+.big{font-size:44px;font-weight:900;text-align:center;margin:6px 0}
+.page{background:#fff;color:#111;border-radius:6px;padding:0 0 14px;font-family:Helvetica,Arial,sans-serif;overflow:hidden;box-shadow:0 0 20px rgba(41,211,255,.25)}
+.page .ph{background:#121c40;color:#fff;padding:14px 16px}
+.page .ph b{display:block;font-size:19px;letter-spacing:1px}
+.page .ph span{font-size:12px;color:#9fd9ff}
+.page .pb{padding:12px 16px}
+.page .info{font-size:14px;line-height:1.7}
+.page table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px}
+.page td,.page th{border:1px solid #888;padding:6px 4px;text-align:center}
+.page th{background:#e8eefc}
+.page .tot{font-size:15px;font-weight:800;margin-top:10px}
+.page .ft{font-size:11px;color:#555;margin-top:10px}
+.shot{background:#ff2d95;color:#fff;border-radius:12px;padding:12px;font-weight:800;text-align:center;font-size:15px;margin:10px 0;line-height:1.35}
+#toast{position:fixed;left:50%;bottom:40px;-webkit-transform:translateX(-50%);transform:translateX(-50%);background:#ff2d95;color:#fff;padding:11px 18px;border-radius:22px;font-weight:800;display:none;z-index:20;box-shadow:0 0 20px #ff2d95;text-align:center;max-width:80%}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top">
+    <div class="logo">THE <span>BIOGEOCHEMICAL</span> CYCLES</div>
+    <div class="chip" id="who" style="display:none"></div>
+  </div>
+
+  <div id="s_login" style="display:none">
+    <div class="card hero">
+      <div class="ics">&#x1F4A7;&#x1F333;&#x26A1;&#x1F9B4;</div>
+      <h2>THE BIOGEOCHEMICAL CYCLES</h2>
+      <p>Water &bull; Carbon &bull; Nitrogen &bull; Phosphorus</p>
+      <p>Learn how each element moves through Earth, label the cycle like your worksheet, then prove it on the quiz.</p>
+    </div>
+    <div class="card">
+      <label for="inName">First and last name</label>
+      <input id="inName" type="text" autocomplete="off" autocapitalize="words" placeholder="Your name">
+      <label for="inPer">Class period</label>
+      <select id="inPer"><option value="">Choose your period</option></select>
+      <div class="err" id="loginErr"></div>
+      <button class="btn" id="btnStart">Start</button>
+    </div>
+  </div>
+
+  <div id="s_hub" style="display:none">
+    <div class="card" style="padding:12px 14px">
+      <div style="font-weight:800;font-size:15px">Pick a cycle (any order)</div>
+      <div class="hint">Each cycle: <b>1. Learn</b> &rarr; <b>2. Label</b> &rarr; <b>3. Quiz</b>. Finish all four to unlock your report for Canvas.</div>
+    </div>
+    <div class="grid" id="hubGrid"></div>
+    <button class="btn" id="btnReport" disabled>&#x1F4C4; Get My Report</button>
+    <button class="btn ghost small" id="btnSwitch" style="margin-top:16px">Not you? Change student</button>
+  </div>
+
+  <div id="s_cyc" style="display:none">
+    <div class="bar">
+      <button class="back" id="btnBack">&larr; Cycles</button>
+      <div class="ctitle" id="cTitle"></div>
+      <button class="back" id="btnZoom" style="display:none"></button>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div id="diabox">
+      <div id="diawrap"><div id="dia"></div></div>
+    </div>
+    <div class="card" id="panel"></div>
+  </div>
+
+  <div id="s_report" style="display:none">
+    <div class="bar"><button class="back" id="btnBack2">&larr; Cycles</button><div class="ctitle">My Report</div></div>
+    <div class="shot">&#x1F4F8; Take a SCREENSHOT of this page and submit it on Canvas.</div>
+    <div class="page" id="page"></div>
+    <button class="btn" id="btnPdf">&#x2B07;&#xFE0F; Download PDF copy</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* THE BIOGEOCHEMICAL CYCLES - ES5, ASCII only */
+var $ = function (id) { return document.getElementById(id); };
+
+/* ---------- SVG helpers ---------- */
+function mk(id, c, w) {
+  return '<marker id="' + id + '" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="' + (w || 4) + '" markerHeight="' + (w || 4) + '" orient="auto" markerUnits="strokeWidth"><path d="M0 0 L10 5 L0 10 z" fill="' + c + '"/></marker>';
+}
+function defs(extra) {
+  return '<defs>' + mk('mR', '#e0201b') + mk('mN', '#1c2a6b') + mk('mG', '#9a9a9a', 2.3) + mk('mK', '#333') +
+    mk('mY', '#e8a800', 2.6) + mk('mGr', '#7d7d7d', 3) +
+    '<pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 7 L7 0" stroke="#7a4f2a" stroke-width="1"/></pattern>' +
+    (extra || '') + '</defs>';
+}
+function A(d, c, w, m, ex) {
+  return '<path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="' + w + '" stroke-linecap="round"' + (m ? ' marker-end="url(#' + m + ')"' : '') + (ex || '') + '/>';
+}
+function T(x, y, t, sz, fill, anc, wt, ex) {
+  return '<text x="' + x + '" y="' + y + '" font-size="' + (sz || 8) + '" fill="' + (fill || '#111') + '" text-anchor="' + (anc || 'middle') + '" font-weight="' + (wt || 'bold') + '" font-family="Arial,Helvetica,sans-serif"' + (ex || '') + '>' + t + '</text>';
+}
+function C(x, y, r, f, ex) { return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + f + '"' + (ex || '') + '/>'; }
+function cloud(x, y, s, f, sh) {
+  var p = [[-20, 4, 11], [-6, -4, 14], [10, -2, 12], [22, 5, 9], [0, 7, 12], [-12, 8, 9]], o = '', i;
+  if (sh) { for (i = 0; i < p.length; i++) { o += C(x + p[i][0] * s + 1.5, y + p[i][1] * s + 2, p[i][2] * s, sh); } }
+  for (i = 0; i < p.length; i++) { o += C(x + p[i][0] * s, y + p[i][1] * s, p[i][2] * s, f); }
+  return o;
+}
+function pbox(x, y, w, h, fill, lines, sz, tc) {
+  var o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + fill + '" stroke="#222" stroke-width="1"/>';
+  var lh = sz * 1.15, y0 = y + h / 2 - (lines.length - 1) * lh / 2 + sz * 0.35, i;
+  for (i = 0; i < lines.length; i++) { o += T(x + w / 2, y0 + i * lh, lines[i], sz, tc || '#111'); }
+  return o;
+}
+
+/* ---------- SCENES (original drawings laid out like the worksheet) ---------- */
+function sceneWater() {
+  var o = '', i, x;
+  o += '<rect x="0" y="0" width="400" height="260" fill="url(#gW)"/>';
+  o += T(200, 13, 'The Water Cycle', 12, '#1430c8', 'middle', '900');
+  o += T(200, 23, '(The Hydrologic Cycle)', 8, '#1430c8');
+  o += C(378, 20, 11, '#ffe14d');
+  o += '<path d="M266 196 Q300 188 400 186 L400 260 L250 260 Z" fill="#1f7fd8"/>';
+  o += '<path d="M266 196 Q300 188 400 186" stroke="#9fdcff" stroke-width="2" fill="none"/>';
+  o += '<path d="M60 260 L62 220 L120 168 L185 104 L232 160 L262 198 L240 214 L222 260 Z" fill="#b4652c"/>';
+  o += '<path d="M118 170 L185 104 L232 160 L214 156 L196 170 L170 163 L148 176 Z" fill="#8a3fbf"/>';
+  o += '<path d="M185 104 L172 121 L180 118 L186 126 L193 117 L200 123 Z" fill="#fff"/>';
+  o += '<path d="M66 246 Q150 236 238 236 L232 250 Q150 252 64 258 Z" fill="#3f9be0" opacity=".9"/>';
+  for (i = 0; i < 9; i++) { o += C(80 + i * 18, 247 - (i % 2) * 2, 1.1, '#cfefff'); }
+  o += '<path d="M262 198 L272 202 L250 260 L222 260 L240 214 Z" fill="#f3d36b"/>';
+  var tr = [[12, 212, 16], [36, 204, 15], [60, 210, 16], [84, 220, 14], [102, 236, 13], [20, 236, 16], [46, 232, 17], [72, 242, 16], [8, 256, 14], [32, 258, 15], [58, 262, 15], [88, 260, 14]];
+  for (i = 0; i < tr.length; i++) { o += C(tr[i][0] + 2, tr[i][1] + 3, tr[i][2], '#1d6e2a') + C(tr[i][0], tr[i][1], tr[i][2], (i % 2) ? '#3fae4c' : '#2f9a3c'); }
+  o += cloud(52, 48, 1.15, '#fff', '#c9d6e2') + cloud(180, 50, 1.15, '#7b7f86', '#55595f') + cloud(338, 50, 1.25, '#fff', '#c9d6e2');
+  for (i = 0; i < 6; i++) { o += A('M' + (162 + i * 9) + ' 90 L' + (158 + i * 9) + ' ' + (106 + (i % 2) * 6), '#9bb4d6', 1, '', ' stroke-dasharray="2 2"'); }
+  o += A('M108 46 L136 46', '#e0201b', 2, 'mR') + A('M284 46 L234 46', '#e0201b', 2, 'mR');
+  o += A('M180 88 L180 106', '#e0201b', 2.2, 'mR');
+  var lx = [18, 36, 54, 72];
+  for (i = 0; i < 4; i++) { x = lx[i]; o += A('M' + x + ' 196 L' + x + ' 174', '#e0201b', 2, 'mR', ' stroke-dasharray="2 2"') + A('M' + x + ' 148 L' + x + ' 116', '#e0201b', 2.2, 'mR'); }
+  var rx = [332, 348, 364, 380];
+  for (i = 0; i < 4; i++) { x = rx[i]; o += A('M' + x + ' 232 L' + x + ' 194', '#e0201b', 2, 'mR', ' stroke-dasharray="2 2"') + A('M' + x + ' 170 L' + x + ' 126', '#e0201b', 2.2, 'mR'); }
+  o += T(346, 119, '(Clouds form)', 8, '#111');
+  o += A('M226 166 L248 192', '#e0201b', 2.2, 'mR');
+  o += T(232, 140, 'Surface', 10, '#111');
+  o += T(160, 196, 'Subsurface', 8, '#111') + T(160, 205, '(underground)', 7.5, '#111');
+  o += A('M190 208 L236 222', '#111', 1.2, 'mK', ' stroke-dasharray="2 2"');
+  o += T(150, 253, 'groundwater / aquifer', 7, '#fff', 'middle', 'bold', ' font-style="italic"');
+  return o;
+}
+
+function sceneCarbon() {
+  var o = '', i;
+  o += '<rect x="0" y="0" width="400" height="165" fill="url(#gC)"/>';
+  o += '<path d="M0 150 Q50 128 110 140 Q170 150 230 140 Q262 138 282 160 L0 162 Z" fill="#8cc25e"/>';
+  o += '<path d="M0 160 L280 160 L300 216 L0 216 Z" fill="#c98b57"/>';
+  var sp = [[20, 180], [44, 200], [100, 172], [150, 205], [210, 176], [250, 200], [230, 190], [70, 206], [190, 196]];
+  for (i = 0; i < sp.length; i++) { o += C(sp[i][0], sp[i][1], 1.8, '#a46a3c'); }
+  o += '<rect x="0" y="216" width="400" height="44" fill="#b98252"/><rect x="0" y="216" width="400" height="44" fill="url(#hatch)"/>';
+  o += '<path d="M280 160 L400 160 L400 238 L322 238 L300 216 Z" fill="#7ad3df"/>';
+  o += '<path d="M280 160 L400 160" stroke="#d9fbff" stroke-width="2"/>';
+  o += '<path d="M300 216 L322 238 L400 238 L400 247 L316 247 Z" fill="#e4d29c"/>';
+  o += '<rect x="4" y="132" width="40" height="20" fill="#9aa3ad" stroke="#555" stroke-width=".6"/>';
+  o += '<rect x="9" y="112" width="4" height="20" fill="#7d8690"/><rect x="17" y="108" width="4" height="24" fill="#7d8690"/><rect x="25" y="114" width="4" height="18" fill="#7d8690"/>';
+  o += C(13, 104, 4, '#eee') + C(17, 96, 5, '#e6e6e6') + C(21, 87, 6, '#efefef');
+  o += pbox(6, 236, 64, 16, '#3a2a1a', ['FOSSIL FUELS'], 7, '#fff');
+  o += '<rect x="116" y="124" width="8" height="32" fill="#6b4a2b"/>';
+  var tc = [[100, 118, 20], [122, 104, 24], [144, 118, 20], [120, 130, 18], [106, 102, 14]];
+  for (i = 0; i < tc.length; i++) { o += C(tc[i][0], tc[i][1], tc[i][2], (i % 2) ? '#4ea63f' : '#3e8e34'); }
+  o += C(62, 152, 10, '#4ea63f') + C(196, 154, 9, '#3e8e34') + C(214, 152, 7, '#4ea63f');
+  o += '<ellipse cx="170" cy="147" rx="9" ry="5" fill="#7a4b2a"/><path d="M177 145 L182 136 L186 137 L181 147 Z" fill="#7a4b2a"/>';
+  o += A('M163 151 L162 159', '#5a3519', 1.4) + A('M176 151 L177 159', '#5a3519', 1.4) + A('M183 136 L186 130 M183 136 L180 130', '#5a3519', 1);
+  o += '<ellipse cx="292" cy="204" rx="7" ry="3" fill="#e9893a"/><path d="M285 204 L280 200 L280 208 Z" fill="#e9893a"/>';
+  o += A('M336 238 Q330 225 336 212 Q342 200 336 192', '#2f8a3a', 2) + A('M346 238 Q352 226 346 214', '#2f8a3a', 2);
+  o += pbox(150, 6, 110, 26, '#f6b52e', ['CO\u2082 in ATMOSPHERE'], 9.5);
+  o += pbox(90, 108, 62, 15, '#f6b52e', ['LAND PLANTS'], 7.5);
+  o += pbox(44, 176, 44, 15, '#f6b52e', ['SOILS'], 7.5);
+  o += pbox(328, 188, 52, 17, '#f6b52e', ['OCEAN'], 8);
+  o += A('M20 108 Q26 36 146 17', '#1c2a6b', 2.4, 'mN');
+  o += A('M22 234 L22 158', '#1c2a6b', 2.4, 'mN');
+  o += A('M160 36 L151 92', '#9a9a9a', 6, 'mG');
+  o += A('M168 100 L177 40', '#9a9a9a', 6, 'mG');
+  o += A('M240 190 L240 42', '#9a9a9a', 5, 'mG');
+  o += A('M140 146 L140 180', '#9a9a9a', 4, 'mG') + A('M172 156 L172 180', '#9a9a9a', 4, 'mG');
+  o += A('M246 160 Q268 160 290 172', '#333', 2, 'mK');
+  o += A('M262 16 Q386 12 372 178', '#9a9a9a', 6, 'mG');
+  o += A('M338 184 Q330 70 268 30', '#9a9a9a', 6, 'mG');
+  o += A('M360 208 L360 238', '#333', 2, 'mK') + A('M300 222 L306 240', '#333', 1.6, 'mK');
+  o += A('M104 212 Q90 224 74 238', '#9a9a9a', 4, 'mG');
+  return o;
+}
+
+function sceneNitrogen() {
+  var o = '', i, x, h;
+  o += '<rect x="0" y="0" width="400" height="260" fill="#e2c48e"/>';
+  o += '<rect x="0" y="0" width="400" height="126" fill="#bdd7ee"/>';
+  o += '<path d="M326 125 L400 125 L400 205 Q368 205 350 175 Q338 150 326 125 Z" fill="#79bfe8"/>';
+  o += C(24, 22, 13, '#f3ef7a');
+  o += '<rect x="5" y="106" width="56" height="20" fill="#222"/><path d="M5 106 L15 98 L25 106 L35 98 L45 106 L55 98 L61 106 Z" fill="#222"/>';
+  o += '<rect x="12" y="80" width="4" height="26" fill="#222"/><rect x="21" y="78" width="4" height="28" fill="#222"/><rect x="30" y="82" width="4" height="24" fill="#222"/>';
+  for (i = 0; i < 5; i++) { o += '<rect x="' + (9 + i * 10) + '" y="114" width="5" height="5" fill="#ddd"/>'; }
+  o += A('M14 78 Q8 66 16 56 Q22 48 14 38', '#d0d0d0', 2.2) + A('M23 76 Q30 64 22 54', '#d0d0d0', 2);
+  o += T(48, 62, 'Fossil Fuel', 8.5) + T(48, 72, 'Emissions', 8.5);
+  o += A('M70 64 Q100 44 128 36', '#e0201b', 1.8, 'mR');
+  o += cloud(160, 28, 1.25, '#e9edf2', '#a3abb5');
+  o += T(160, 32, 'Precipitation', 8.5, '#222');
+  for (i = 0; i < 9; i++) { o += A('M' + (132 + i * 7) + ' 46 L' + (128 + i * 7) + ' 86', '#7f97b5', .8, '', ' stroke-dasharray="1.5 2.5"'); }
+  o += '<polyline points="150,44 158,60 151,62 162,90" fill="none" stroke="#d8ff3b" stroke-width="2"/>';
+  o += '<polyline points="172,46 178,62 172,63 180,84" fill="none" stroke="#d8ff3b" stroke-width="1.6"/>';
+  o += T(300, 16, 'Gaseous', 8.5) + T(300, 26, 'Atmospheric', 8.5) + T(300, 36, 'Nitrogen', 8.5) + T(300, 46, 'Store', 8.5);
+  o += cloud(352, 66, 1.05, '#fff', '#c3ccd6');
+  var hs = [44, 52, 40, 56, 46, 60, 42, 54, 48];
+  for (i = 0; i < 9; i++) { x = 124 + i * 9; h = hs[i]; o += '<polygon points="' + (x - 8) + ',126 ' + x + ',' + (126 - h) + ' ' + (x + 8) + ',126" fill="' + ['#2e7d32', '#43a047', '#1b5e20'][i % 3] + '"/>'; }
+  o += '<ellipse cx="154" cy="113" rx="11" ry="6" fill="#fff" stroke="#222" stroke-width=".7"/>';
+  o += C(150, 112, 2.6, '#222') + C(158, 115, 2.2, '#222') + '<ellipse cx="166" cy="110" rx="3.5" ry="3" fill="#fff" stroke="#222" stroke-width=".7"/>';
+  o += A('M146 118 L146 124 M151 119 L151 124 M158 119 L158 124 M162 118 L162 124', '#222', 1.2);
+  o += '<rect x="214" y="110" width="26" height="9" fill="#d32f2f"/><rect x="230" y="99" width="10" height="11" fill="none" stroke="#333" stroke-width="1.2"/>';
+  o += C(220, 121, 6, '#222') + C(220, 121, 2.5, '#d32f2f') + C(238, 122, 4, '#222');
+  o += A('M152 122 L152 136', '#e0201b', 1.8, 'mR');
+  o += T(152, 147, 'Organic Matter', 9) + T(152, 157, '(R-NH\u2082)', 8);
+  o += A('M176 156 Q206 166 230 176', '#e0201b', 1.8, 'mR');
+  o += T(204, 176, 'Mineralization', 7, '#2c7a3a');
+  o += T(252, 184, 'Ammonium', 9) + T(252, 194, '(NH\u2084\u207A)', 8);
+  o += A('M256 198 Q262 208 248 213', '#e0201b', 1.8, 'mR');
+  o += T(236, 222, 'Nitrites', 9) + T(236, 232, '(NO\u2082\u207B)', 8);
+  o += A('M214 224 L178 224', '#e0201b', 1.8, 'mR');
+  o += T(148, 222, 'Nitrates', 9) + T(148, 232, '(NO\u2083\u207B)', 8);
+  o += A('M262 129 L326 132', '#e0201b', 1.8, 'mR') + T(294, 125, 'Runoff', 7.5, '#2c7a3a');
+  o += A('M244 140 Q290 140 334 150', '#e0201b', 1.8, 'mR') + T(296, 146, 'Leaching', 7.5, '#2c7a3a');
+  o += A('M262 230 Q320 232 346 178', '#e0201b', 1.6, 'mR') + A('M150 238 Q250 262 352 182', '#e0201b', 1.6, 'mR');
+  o += T(318, 222, 'Leaching', 7.5, '#2c7a3a');
+  o += T(370, 162, 'Eutrophication', 7.5, '#111');
+  o += T(98, 96, 'Gaseous', 8.5) + T(98, 106, 'Losses', 8.5) + T(98, 116, 'N\u2082 &amp; N\u2082O', 8.5);
+  o += A('M126 218 Q78 205 96 124', '#e0201b', 1.8, 'mR');
+  o += A('M140 212 Q112 172 134 130', '#e0201b', 1.8, 'mR');
+  o += A('M262 38 L192 72', '#e0201b', 1.8, 'mR');
+  o += A('M290 50 L206 122', '#e0201b', 1.8, 'mR');
+  o += A('M232 128 L246 170', '#e0201b', 1.8, 'mR');
+  return o;
+}
+
+function scenePhos() {
+  var o = '', i;
+  o += '<rect x="0" y="0" width="400" height="370" fill="#d6e6ee"/>';
+  for (i = 0; i < 10; i++) { o += A('M' + (282 + i * 10) + ' 52 L' + (274 + i * 10) + ' 100', '#9aa7b3', .8); }
+  o += cloud(322, 34, 1.7, '#b4bcc4', '#8e979f');
+  o += '<path d="M0 125 L0 70 L30 40 L60 62 L100 22 L150 70 L185 100 L200 125 Z" fill="#8fa8bf"/>';
+  o += A('M30 40 L42 70 M100 22 L110 60 L96 90', '#6f879e', 1);
+  o += '<path d="M0 118 Q180 96 400 112 L400 240 L0 240 Z" fill="#b6c58c"/>';
+  o += '<path d="M215 212 Q290 168 400 156 L400 370 L205 370 Z" fill="#efd5ae"/>';
+  o += '<path d="M0 205 Q120 200 250 214 L250 300 L0 300 Z" fill="#b9e1f4"/>';
+  o += '<path d="M0 228 L250 232 L250 300 L0 300 Z" fill="#8ccbea"/>';
+  o += '<path d="M0 300 L242 300 L232 370 L0 370 Z" fill="#a9b9c7"/>';
+  for (i = 0; i < 9; i++) { o += A('M' + (10 + i * 5) + ' 228 Q' + (6 + i * 5) + ' 180 ' + (14 + i * 4) + ' ' + (122 + (i % 3) * 12), i % 2 ? '#2e7d32' : '#43a047', 2); }
+  var rk = [[150, 118], [168, 126], [186, 120], [160, 136], [196, 134], [178, 140]];
+  for (i = 0; i < rk.length; i++) { o += '<polygon points="' + (rk[i][0] - 9) + ',' + (rk[i][1] + 5) + ' ' + (rk[i][0] - 4) + ',' + (rk[i][1] - 6) + ' ' + (rk[i][0] + 7) + ',' + (rk[i][1] - 4) + ' ' + (rk[i][0] + 10) + ',' + (rk[i][1] + 6) + '" fill="#9fb3c7" stroke="#6c7f93" stroke-width=".8"/>'; }
+  var pb = [[150, 182], [160, 190], [172, 186], [146, 196], [180, 198], [196, 192], [166, 204], [206, 204], [188, 210], [150, 208], [216, 196]];
+  for (i = 0; i < pb.length; i++) { o += '<ellipse cx="' + pb[i][0] + '" cy="' + pb[i][1] + '" rx="5" ry="3" fill="#a8b2bc" stroke="#7b8590" stroke-width=".6"/>'; }
+  o += A('M262 206 L262 222 M262 210 L255 224 M262 210 L270 222', '#8a6a4a', .8);
+  o += '<path d="M262 206 Q246 196 240 182 Q254 190 262 200 Q272 186 286 180 Q276 196 262 206 Z" fill="#3e9b3a"/>';
+  o += A('M262 200 L270 152', '#3e9b3a', 1.6) + C(270, 150, 5, '#f5d33a') + C(256, 166, 3.5, '#eee');
+  o += '<ellipse cx="364" cy="160" rx="15" ry="22" fill="#a5713f"/>' + C(352, 130, 9, '#a5713f');
+  o += '<ellipse cx="350" cy="112" rx="3" ry="11" fill="#a5713f"/><ellipse cx="357" cy="113" rx="3" ry="11" fill="#a5713f"/>' + C(348, 128, 1.4, '#222');
+  o += '<ellipse cx="372" cy="182" rx="10" ry="4" fill="#94612f"/>';
+  o += pbox(176, 150, 64, 24, '#fff', ['Phosphates', 'in rock'], 7.5);
+  o += pbox(262, 96, 76, 34, '#fff', ['Phosphates', 'in organic', 'compounds'], 7.5);
+  o += pbox(190, 234, 70, 36, '#fff', ['Phosphates', 'in soil', '(inorganic)'], 7.5);
+  o += pbox(70, 240, 70, 24, '#fff', ['Phosphates', 'in solution'], 7.5);
+  o += pbox(64, 298, 92, 26, '#fff', ['Precipitated', '(solid) phosphates'], 7.5);
+  o += T(300, 200, 'Plants', 8) + T(344, 198, 'Animals', 8) + T(252, 346, 'Decomposition', 8);
+  var Y = '#e8a800';
+  o += A('M26 350 L26 60 L150 60 Q170 60 170 84', Y, 4, 'mY');
+  o += A('M180 140 L196 148', Y, 3, 'mY');
+  o += A('M208 176 L208 230', Y, 4, 'mY');
+  o += A('M246 232 L258 210', Y, 4, 'mY');
+  o += A('M276 150 L290 136', Y, 4, 'mY');
+  o += A('M340 112 L352 118', Y, 4, 'mY');
+  o += A('M292 206 Q298 228 310 246', Y, 4, 'mY') + A('M374 184 Q376 228 358 248', Y, 4, 'mY');
+  o += A('M330 270 L330 316', Y, 4, 'mY');
+  o += A('M282 330 L234 330 Q220 330 220 274', Y, 4, 'mY');
+  o += A('M190 254 L144 254', Y, 4, 'mY');
+  o += A('M104 266 L104 294', Y, 4, 'mY');
+  o += A('M64 314 Q54 320 50 328', Y, 4, 'mY');
+  o += A('M168 184 Q150 205 132 224', '#4c8fc4', 2.4, 'mK') + A('M206 198 Q196 214 182 226', '#4c8fc4', 2.4, 'mK');
+  return o;
+}
+
+/* ---------- CYCLE DATA ---------- */
+var CY = [
+{
+  id: 'water', name: 'Water Cycle', sub: 'Hydrologic Cycle', icon: '\uD83D\uDCA7', col: '#29d3ff',
+  W: 400, H: 260, scene: sceneWater, pc: ['#e9fbff', '#0a63c9'],
+  extraDefs: '<linearGradient id="gW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#55c2ff"/><stop offset="1" stop-color="#d8f6ff"/></linearGradient>',
+  slots: [
+    { n: 1, x: 8, y: 98, w: 84, h: 16, a: 'Condensation' },
+    { n: 2, x: 6, y: 154, w: 88, h: 16, a: 'Transpiration' },
+    { n: 3, x: 136, y: 70, w: 88, h: 16, a: 'Precipitation' },
+    { n: 4, x: 246, y: 198, w: 72, h: 16, a: 'Runoff' },
+    { n: 5, x: 300, y: 92, w: 94, h: 16, a: 'Condensation' },
+    { n: 6, x: 300, y: 174, w: 94, h: 16, a: 'Evaporation' },
+    { n: 7, x: 296, y: 238, w: 98, h: 16, a: 'Accumulation' }
+  ],
+  bank: ['Condensation', 'Precipitation', 'Transpiration', 'Evaporation', 'Runoff', 'Accumulation'],
+  flows: {
+    evap: ['M332 232 L332 192', 'M356 234 L356 192', 'M380 232 L380 192'],
+    trans: ['M18 202 L18 152', 'M36 202 L36 152', 'M54 202 L54 152', 'M72 202 L72 152'],
+    subl: ['M186 112 Q202 92 188 64'],
+    cond: ['M340 170 L340 68', 'M366 170 L366 68', 'M22 150 L22 64', 'M50 150 L50 64', 'M284 46 L232 46', 'M106 46 L140 46'],
+    precip: ['M168 66 L168 112', 'M190 66 L194 108', 'M180 88 L182 106'],
+    runoff: ['M196 120 Q222 160 250 196'],
+    infil: ['M212 172 L218 194', 'M228 176 L232 196'],
+    perc: ['M218 194 L226 236', 'M232 196 L236 236'],
+    ground: ['M80 250 Q160 242 236 242 L262 232'],
+    accum: ['M250 200 Q275 214 300 228', 'M262 232 L296 244']
+  },
+  steps: [
+    { t: 'The Water Cycle', f: 'all', d: "Water moves nonstop between the <b>ocean, the air, the land and living things</b>. The <b>sun's energy</b> lifts water up, and <b>gravity</b> pulls it back down.", x: "The water you drink today is the same water dinosaurs drank. Earth keeps recycling it!" },
+    { t: 'Evaporation', s: [6], f: ['evap'], d: "The sun heats water in oceans, lakes and rivers. Liquid water turns into an invisible gas called <b>water vapor</b>, which rises into the air.", x: "Most evaporation comes from the oceans. When salt water evaporates, the salt stays behind." },
+    { t: 'Transpiration', s: [2], f: ['trans'], d: "Plants pull water up from their roots and release <b>water vapor</b> through tiny pores in their leaves called <b>stomata</b>.", x: "Evaporation + transpiration together are called <b>evapotranspiration</b>." },
+    { t: 'Sublimation', f: ['subl'], d: "Ice or snow turns <b>straight into water vapor</b> without melting into liquid first. It happens on cold, sunny, windy mountain tops and glaciers.", x: "Not on the worksheet, but it is a real path in the water cycle." },
+    { t: 'Condensation', s: [1, 5], f: ['cond'], d: "As water vapor rises, it <b>cools</b>. Cool vapor turns back into tiny <b>liquid droplets</b> around bits of dust. Billions of droplets = a <b>cloud</b>.", x: "Worksheet tip: Condensation is the word you use <b>twice</b> (boxes 1 and 5). Dew on grass and fog are condensation too." },
+    { t: 'Precipitation', s: [3], f: ['precip'], d: "Cloud droplets bump together and grow. When they get too heavy, they fall as <b>rain, snow, sleet or hail</b>.", x: "Florida's summer afternoon thunderstorms are the water cycle running at full speed." },
+    { t: 'Runoff', s: [4], f: ['runoff'], d: "Water that <b>flows over the ground</b> downhill into streams, rivers, lakes and the ocean.", x: "Parking lots and roads cause more runoff. Runoff can carry trash, oil and fertilizer into our water." },
+    { t: 'Infiltration', f: ['infil'], d: "Water <b>soaks into the soil</b> at the ground's surface instead of running off.", x: "Sandy Florida soil lets water infiltrate fast." },
+    { t: 'Percolation', f: ['perc'], d: "Water keeps moving <b>deeper down</b> through layers of soil and rock until it reaches the <b>water table</b>.", x: "Infiltration = soaking IN at the surface. Percolation = moving DOWN deeper." },
+    { t: 'Groundwater & Aquifers', f: ['ground'], d: "<b>Groundwater</b> is water stored underground in the spaces between sand and rock. An <b>aquifer</b> is a layer of rock or sand that holds groundwater and lets it flow.", x: "Most Floridians drink water pumped up from aquifers like the <b>Floridan Aquifer</b>." },
+    { t: 'Accumulation (Collection)', s: [7], f: ['accum'], d: "Water <b>collects and is stored</b> in oceans, lakes, rivers, ice caps and underground. Then it can evaporate again!", x: "About 97% of Earth's water is salty ocean water." },
+    { t: 'Why It Matters', why: 1, f: 'all', d: "<ul><li>It delivers the <b>fresh water</b> you drink, plus water for farms and every living thing.</li><li>It moves <b>heat</b> around Earth and drives <b>weather</b>, from afternoon storms to hurricanes.</li><li>Evaporation <b>cleans water</b> naturally because salt and pollution are left behind.</li><li>Paving land and polluting runoff can hurt our <b>aquifers</b>, our drinking water.</li></ul>" }
+  ],
+  quiz: [
+    { q: 'Which process uses the sun\'s energy to turn liquid water into water vapor?', a: ['Evaporation', 'Condensation', 'Precipitation', 'Runoff'], e: 'Evaporation = liquid to gas, powered by the sun.' },
+    { q: 'Water vapor released from the leaves of plants is called:', a: ['Transpiration', 'Infiltration', 'Sublimation', 'Percolation'], e: 'Plants release water vapor through stomata in their leaves: transpiration.' },
+    { q: 'Clouds form because of:', a: ['Condensation', 'Evaporation', 'Runoff', 'Transpiration'], e: 'Rising vapor cools and condenses into tiny droplets that make clouds.' },
+    { q: 'What is the difference between infiltration and percolation?', a: ['Infiltration is water soaking into the soil surface; percolation is water moving deeper to the groundwater', 'Infiltration happens in clouds; percolation happens in oceans', 'They are two names for evaporation', 'Percolation is water flowing over the ground'], e: 'Infiltration = soaking in at the surface. Percolation = moving down deeper.' },
+    { q: 'An aquifer is:', a: ['An underground layer of rock or sand that holds groundwater', 'A type of storm cloud', 'The mouth of a river', 'A pore on a leaf'], e: 'Aquifers store groundwater. The Floridan Aquifer supplies much of Florida\'s drinking water.' },
+    { q: 'Rain flowing across a parking lot into a storm drain is an example of:', a: ['Runoff', 'Infiltration', 'Condensation', 'Transpiration'], e: 'Water flowing over the surface is runoff.' },
+    { q: 'Snow on a mountain turning directly into water vapor is:', a: ['Sublimation', 'Condensation', 'Precipitation', 'Accumulation'], e: 'Sublimation skips the liquid stage: solid to gas.' },
+    { q: 'What drives (powers) the water cycle?', a: ['Energy from the sun, plus gravity', 'Earth\'s magnetic field', 'Only the moon', 'Only the wind'], e: 'The sun evaporates water; gravity brings it back down as precipitation and runoff.' }
+  ]
+},
+{
+  id: 'carbon', name: 'Carbon Cycle', sub: 'C', icon: '\uD83C\uDF33', col: '#b6ff3b',
+  W: 400, H: 260, scene: sceneCarbon, pc: ['#1b1b1b', '#ffe14d'],
+  extraDefs: '<linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fb9e6"/><stop offset="1" stop-color="#dff4fb"/></linearGradient>',
+  slots: [
+    { n: 1, x: 30, y: 44, w: 68, h: 15, a: 'combustion' },
+    { n: 2, x: 74, y: 64, w: 72, h: 15, a: 'photosynthesis' },
+    { n: 3, x: 182, y: 50, w: 54, h: 15, a: 'respiration' },
+    { n: 4, x: 244, y: 138, w: 48, h: 15, a: 'runoff' },
+    { n: 5, x: 312, y: 96, w: 60, h: 15, a: 'diffusion' },
+    { n: 6, x: 82, y: 232, w: 88, h: 15, a: 'carbonification' },
+    { n: 7, x: 114, y: 186, w: 104, h: 24, a: 'dead organisms and animal waste' },
+    { n: 8, x: 244, y: 92, w: 44, h: 15, a: 'decay' },
+    { n: 9, x: 316, y: 244, w: 80, h: 15, a: 'sedimentation' }
+  ],
+  bank: ['carbonification', 'combustion', 'dead organisms and animal waste', 'decay', 'diffusion', 'photosynthesis', 'respiration', 'runoff', 'sedimentation'],
+  flows: {
+    atm: ['M158 22 L254 22', 'M254 26 L158 26'],
+    photo: ['M160 36 L151 96'],
+    resp: ['M168 100 L177 38', 'M180 140 Q186 90 190 36'],
+    dead: ['M140 144 L140 184', 'M172 154 L172 184'],
+    decay: ['M240 190 L240 38'],
+    runoff: ['M246 160 Q268 160 292 174'],
+    diff: ['M262 16 Q386 12 372 182', 'M338 184 Q330 70 268 30'],
+    acid: ['M296 110 Q300 160 298 210', 'M392 120 Q388 170 390 228'],
+    sed: ['M360 206 L360 242', 'M300 222 L306 242'],
+    carb: ['M104 212 Q90 224 74 240'],
+    comb: ['M22 234 L22 156', 'M20 108 Q26 36 146 17']
+  },
+  steps: [
+    { t: 'The Carbon Cycle', f: 'all', d: "Carbon is the <b>building block of life</b>. It is in every sugar, fat, protein and DNA molecule in your body. Carbon moves between the <b>air, living things, soil, ocean and rock</b>.", x: "The carbon in your body was once CO\u2082 in the air, captured by a plant." },
+    { t: 'Atmospheric Carbon', f: ['atm'], d: "Carbon in the air is mostly <b>carbon dioxide (CO\u2082)</b> gas. It is a tiny part of air (about 0.04%), but it is a <b>greenhouse gas</b> that traps heat.", x: "Scientists measure CO\u2082 every day, and it has been rising since the 1800s." },
+    { t: 'Photosynthesis', s: [2], f: ['photo'], d: "Plants and algae use <b>sunlight</b> to take CO\u2082 out of the air and combine it with water to make <b>sugar (glucose)</b>, releasing <b>oxygen</b>.<span class=\"eq\">6CO\u2082 + 6H\u2082O + light \u2192 C\u2086H\u2081\u2082O\u2086 + 6O\u2082</span>", x: "Photosynthesis is the main way carbon LEAVES the atmosphere." },
+    { t: 'Respiration', s: [3], f: ['resp'], d: "Living things (<b>plants AND animals</b>) break down sugar for energy and <b>release CO\u2082</b> back into the air.<span class=\"eq\">C\u2086H\u2081\u2082O\u2086 + 6O\u2082 \u2192 6CO\u2082 + 6H\u2082O + energy</span>", x: "Respiration is the reverse of photosynthesis. Every breath you breathe out has CO\u2082." },
+    { t: 'Dead Organisms & Animal Waste', s: [7], f: ['dead'], d: "When plants and animals <b>die</b> or produce <b>waste</b>, the carbon stored in their bodies ends up in the <b>soil</b>.", x: "Fallen leaves, dead animals and manure are all carbon on its way to the soil." },
+    { t: 'Decay (Decomposition)', s: [8], f: ['decay'], d: "<b>Decomposers</b> such as bacteria and fungi break down (rot) dead matter and waste. They respire and <b>release CO\u2082</b> back into the air.", x: "Rotting = decomposition = decay. A compost pile is warm because decomposers are busy respiring." },
+    { t: 'Runoff', s: [4], f: ['runoff'], d: "Rain washes <b>dissolved carbon</b> and bits of organic matter from the soil into rivers and then the <b>ocean</b>.", x: "Rivers carry carbon from land to the sea every day." },
+    { t: 'Diffusion (Ocean Absorption)', s: [5], f: ['diff'], d: "CO\u2082 gas moves back and forth between the <b>air and the ocean surface</b>. The ocean <b>absorbs</b> CO\u2082 and stores huge amounts as <b>bicarbonate (HCO\u2083\u207B)</b>.", x: "The ocean soaks up roughly a quarter of the CO\u2082 people release each year." },
+    { t: 'Ocean Acidification', f: ['acid', 'diff'], d: "When the ocean absorbs CO\u2082, it reacts with water to form <b>carbonic acid</b>.<span class=\"eq\">CO\u2082 + H\u2082O \u2192 H\u2082CO\u2083 (carbonic acid)</span>More CO\u2082 makes seawater more <b>acidic</b>. Ocean pH has dropped from about <b>8.2 to 8.1</b> since the 1800s (about 30% more acidic).", x: "Acid makes it harder for <b>corals, clams, oysters and plankton</b> to build shells, a big problem for Florida's coral reefs." },
+    { t: 'Sedimentation', s: [9], f: ['sed'], d: "Shells and skeletons of sea creatures <b>sink and pile up</b> on the sea floor. Over a long time they are pressed into rock called <b>limestone</b>.", x: "Much of Florida sits on limestone made from ancient sea shells!" },
+    { t: 'Carbonification (Fossil Fuels)', s: [6], f: ['carb'], d: "Dead organisms buried deep underground are squeezed by <b>heat and pressure</b> for <b>millions of years</b> and slowly turn into <b>coal, oil and natural gas</b>.", x: "Your worksheet calls this <b>carbonification</b>. Scientists also say carbonization or fossil fuel formation." },
+    { t: 'Combustion', s: [1], f: ['comb'], d: "<b>Burning</b> fossil fuels (cars, power plants, factories) and wood releases carbon that was stored for millions of years as <b>CO\u2082</b>, very quickly.", x: "Deforestation adds CO\u2082 too: burning trees releases carbon AND removes trees that would absorb it." },
+    { t: 'Why It Matters', why: 1, f: 'all', d: "<ul><li>Extra CO\u2082 traps more heat, which drives <b>climate change</b>: hotter summers, stronger storms and <b>rising seas</b> along Florida's coast.</li><li><b>Ocean acidification</b> threatens coral reefs, shellfish and fisheries.</li><li>All of your <b>food</b> is carbon that plants captured by photosynthesis.</li><li>Planting trees and using less fossil fuel keep more carbon out of the air.</li></ul>" }
+  ],
+  quiz: [
+    { q: 'Which process removes CO\u2082 from the atmosphere?', a: ['Photosynthesis', 'Respiration', 'Combustion', 'Decay'], e: 'Plants take in CO\u2082 to make sugar during photosynthesis.' },
+    { q: 'Burning fossil fuels such as gasoline and coal is called:', a: ['Combustion', 'Sedimentation', 'Diffusion', 'Photosynthesis'], e: 'Combustion = burning, which releases stored carbon as CO\u2082.' },
+    { q: 'Which organisms carry out cellular respiration?', a: ['Both plants and animals', 'Only animals', 'Only plants', 'Only bacteria'], e: 'Plants make sugar AND break it down for energy, so they respire too.' },
+    { q: 'Ocean acidification happens because:', a: ['The ocean absorbs CO\u2082, which forms carbonic acid', 'Rivers carry salt into the ocean', 'Oil spills only', 'Ocean water evaporates'], e: 'CO\u2082 + H\u2082O makes carbonic acid, lowering ocean pH.' },
+    { q: 'Bacteria and fungi return carbon to the air from dead matter through:', a: ['Decay (decomposition)', 'Photosynthesis', 'Sedimentation', 'Runoff'], e: 'Decomposers break down dead matter and release CO\u2082.' },
+    { q: 'Shells piling up on the sea floor and becoming limestone is:', a: ['Sedimentation', 'Combustion', 'Respiration', 'Transpiration'], e: 'Sedimentation stores carbon in rock for a very long time.' },
+    { q: 'Fossil fuels form from:', a: ['Dead organisms buried under heat and pressure for millions of years', 'Lava from volcanoes', 'Evaporated ocean water', 'Lightning strikes'], e: 'Coal, oil and natural gas are the remains of ancient life.' },
+    { q: 'Why is ocean acidification a problem for coral reefs?', a: ['It makes it harder for corals to build their skeletons and shells', 'It makes the water too cold', 'It adds too much oxygen', 'It blocks all sunlight'], e: 'More acidic water makes building calcium carbonate shells and skeletons harder.' }
+  ]
+},
+{
+  id: 'nitrogen', name: 'Nitrogen Cycle', sub: 'N', icon: '\u26A1', col: '#c77dff',
+  W: 400, H: 260, scene: sceneNitrogen, pc: ['#7a2cff', '#ffffff'], extraDefs: '',
+  slots: [
+    { n: 1, x: 172, y: 32, w: 90, h: 14, a: 'lightning fixation' },
+    { n: 2, x: 220, y: 70, w: 86, h: 14, a: 'bacteria fixation' },
+    { n: 3, x: 196, y: 134, w: 58, h: 14, a: 'fertilizers' },
+    { n: 4, x: 10, y: 150, w: 80, h: 14, a: 'denitrification' },
+    { n: 5, x: 82, y: 178, w: 92, h: 14, a: 'plant consumption' },
+    { n: 6, x: 172, y: 236, w: 62, h: 14, a: 'nitrification' },
+    { n: 7, x: 268, y: 200, w: 64, h: 14, a: 'nitrification' }
+  ],
+  bank: ['bacteria fixation', 'denitrification', 'fertilizers', 'lightning fixation', 'plant consumption', 'nitrification'],
+  flows: {
+    n2: ['M236 32 L370 32', 'M370 40 L236 40'],
+    light: ['M262 38 L192 72', 'M150 44 L158 60 L151 62 L162 90'],
+    bact: ['M290 50 L206 122'],
+    fert: ['M232 128 L246 172'],
+    mineral: ['M152 120 L152 138', 'M176 156 Q206 166 230 178'],
+    nitri: ['M256 198 Q262 208 248 214', 'M214 224 L176 224'],
+    plant: ['M140 212 Q112 172 134 128'],
+    eat: ['M134 124 L146 114'],
+    denit: ['M126 218 Q78 205 96 122'],
+    leach: ['M262 129 L326 132', 'M244 140 Q290 140 334 150', 'M150 238 Q250 262 352 182'],
+    fossil: ['M70 64 Q100 44 128 36']
+  },
+  steps: [
+    { t: 'The Nitrogen Cycle', f: 'all', d: "Nitrogen gas (<b>N\u2082</b>) makes up about <b>78% of the air</b>, but most living things <b>cannot use it</b>! Its two atoms are held together by a super-strong <b>triple bond</b>.", x: "The nitrogen cycle changes N\u2082 into forms living things can use, then back to N\u2082 again." },
+    { t: 'Why Life Needs Nitrogen', f: ['plant', 'eat'], d: "Nitrogen is part of <b>amino acids (proteins)</b>, <b>DNA and RNA</b>, and <b>chlorophyll</b>. No nitrogen = no muscles, no enzymes, no genes and no green plants.", x: "Yellow leaves on a plant are often a sign it is not getting enough nitrogen." },
+    { t: 'Lightning Fixation', s: [1], f: ['light'], d: "Lightning's huge energy <b>breaks the N\u2082 triple bond</b>. Nitrogen joins with oxygen to make <b>nitrogen oxides</b>, which dissolve in rain and fall to the soil as <b>nitrates</b>.", x: "Florida is the lightning capital of the U.S., so lots of nitrogen gets fixed here!" },
+    { t: 'Bacteria Fixation', s: [2], f: ['bact'], d: "<b>Nitrogen-fixing bacteria</b> in the soil and in <b>root nodules</b> of legumes (beans, peanuts, clover) turn N\u2082 into <b>ammonia (NH\u2083)</b>, which becomes <b>ammonium (NH\u2084\u207A)</b> in soil.", x: "Bacteria do most of the natural nitrogen fixing on Earth, far more than lightning." },
+    { t: 'Fertilizers', s: [3], f: ['fert'], d: "Factories pull N\u2082 out of the air and make <b>ammonia fertilizer</b>. Farmers add it to soil so crops grow bigger.", x: "This human-made fixation (the Haber-Bosch process) helps feed billions of people." },
+    { t: 'Ammonification (Mineralization)', f: ['mineral'], d: "<b>Animal waste</b> and <b>dead organic matter (R-NH\u2082)</b> are broken down by <b>decomposers</b> into <b>ammonia / ammonium (NH\u2084\u207A)</b>.", x: "Your diagram calls this step <b>mineralization</b>. It is how nitrogen from poop and dead things gets recycled." },
+    { t: 'Nitrification', s: [7, 6], f: ['nitri'], d: "<b>Nitrifying bacteria</b> change nitrogen in two steps:<span class=\"eq\">Ammonium (NH\u2084\u207A) \u2192 Nitrites (NO\u2082\u207B) \u2192 Nitrates (NO\u2083\u207B)</span>", x: "Two steps = two boxes! Nitrification is the word used <b>twice</b> on the worksheet (boxes 6 and 7)." },
+    { t: 'Plant Consumption (Assimilation)', s: [5], f: ['plant', 'eat'], d: "Plant roots <b>absorb nitrates</b> (and ammonium) and use the nitrogen to build proteins and DNA. <b>Animals get nitrogen by eating plants</b> (or eating animals that ate plants).", x: "The cow on the diagram gets its nitrogen from the grass and plants it eats." },
+    { t: 'Denitrification', s: [4], f: ['denit'], d: "<b>Denitrifying bacteria</b> in wet, low-oxygen soil turn nitrates back into <b>N\u2082 gas</b> (and a little N\u2082O), returning nitrogen to the <b>atmosphere</b>.", x: "This closes the loop: nitrogen goes back to the air where it started." },
+    { t: 'Runoff, Leaching & Eutrophication', f: ['leach'], d: "Extra fertilizer washes into water (<b>runoff</b>) or drains down through soil (<b>leaching</b>). Too many nutrients cause <b>algae blooms</b>. When the algae die, decomposers use up the oxygen and fish die. This is <b>eutrophication</b>.", x: "Florida's blue-green algae blooms in Lake Okeechobee are linked to nutrient pollution." },
+    { t: 'Fossil Fuel Emissions', f: ['fossil'], d: "Burning fossil fuels releases <b>nitrogen oxides</b> into the air. They cause <b>smog</b> and <b>acid rain</b> and add extra nitrogen to the cycle.", x: "Car exhaust is a major source of nitrogen oxides." },
+    { t: 'Why It Matters', why: 1, f: 'all', d: "<ul><li>Nitrogen controls how much <b>food</b> farms can grow.</li><li>Too much nitrogen <b>pollutes</b> lakes, rivers and the ocean (algae blooms, fish kills).</li><li>The proteins and DNA in <b>your body</b> contain nitrogen that was once in the air, fixed by bacteria or lightning!</li></ul>" }
+  ],
+  quiz: [
+    { q: 'About what percent of the atmosphere is nitrogen gas (N\u2082)?', a: ['78%', '21%', '1%', '0.04%'], e: 'N\u2082 is about 78% of air. Oxygen is about 21%.' },
+    { q: 'Why can\'t most living things use N\u2082 straight from the air?', a: ['Its atoms are held by a very strong triple bond', 'It is poisonous', 'There is too little of it', 'It is only found in the ocean'], e: 'The triple bond is very hard to break without bacteria or lightning.' },
+    { q: 'What turns N\u2082 into ammonia in the root nodules of beans and peanuts?', a: ['Nitrogen-fixing bacteria', 'Denitrifying bacteria', 'Fungi', 'Lightning'], e: 'Nitrogen-fixing bacteria live in legume root nodules.' },
+    { q: 'How does lightning move nitrogen in the cycle?', a: ['It breaks N\u2082 apart so nitrogen joins oxygen and falls in rain as nitrates', 'It turns nitrogen into CO\u2082', 'It evaporates nitrogen out of the ocean', 'It turns nitrogen into fossil fuels'], e: 'Lightning fixation makes nitrogen oxides that rain carries to the soil.' },
+    { q: 'Which order shows nitrification?', a: ['Ammonium \u2192 nitrites \u2192 nitrates', 'Nitrates \u2192 N\u2082 gas', 'N\u2082 \u2192 ammonia', 'Proteins \u2192 ammonia'], e: 'Nitrifying bacteria: NH\u2084\u207A \u2192 NO\u2082\u207B \u2192 NO\u2083\u207B.' },
+    { q: 'Denitrification returns nitrogen to:', a: ['The atmosphere as N\u2082 gas', 'Plant roots', 'Rocks', 'The ocean as ammonia'], e: 'Denitrifying bacteria release N\u2082 back to the air.' },
+    { q: 'How do animals get the nitrogen they need?', a: ['By eating plants or other animals', 'By breathing in N\u2082', 'Through their skin', 'By drinking water'], e: 'Animals get nitrogen from the proteins in their food.' },
+    { q: 'Fertilizer runoff that causes algae blooms and low oxygen in water is called:', a: ['Eutrophication', 'Nitrification', 'Fixation', 'Respiration'], e: 'Eutrophication = too many nutrients in water, leading to algae blooms and fish kills.' }
+  ]
+},
+{
+  id: 'phos', name: 'Phosphorus Cycle', sub: 'P', icon: '\uD83E\uDDB4', col: '#ff8c42',
+  W: 400, H: 370, scene: scenePhos, pc: ['#ff7a00', '#3a1a00'], extraDefs: '',
+  slots: [
+    { n: 1, x: 32, y: 86, w: 78, h: 16, a: 'Uplifting of rock' },
+    { n: 2, x: 82, y: 146, w: 92, h: 16, a: 'weathering of rock' },
+    { n: 3, x: 102, y: 190, w: 50, h: 16, a: 'runoff' },
+    { n: 4, x: 290, y: 250, w: 84, h: 18, a: 'Dead organisms' },
+    { n: 5, x: 4, y: 330, w: 44, h: 16, a: 'rock' },
+    { n: 6, x: 282, y: 320, w: 84, h: 18, a: 'bacteria in soil' }
+  ],
+  bank: ['Dead organisms', 'bacteria in soil', 'rock', 'Uplifting of rock', 'weathering of rock', 'runoff'],
+  flows: {
+    uplift: ['M26 350 L26 60 L150 60 Q170 60 170 86'],
+    weath: ['M150 112 L176 142', 'M180 140 L198 150', 'M208 176 L208 232'],
+    runoff: ['M168 184 Q150 205 132 226', 'M206 198 Q196 214 182 228'],
+    plant: ['M246 232 L260 206', 'M276 150 L292 134', 'M340 112 L354 120'],
+    dead: ['M292 206 Q298 228 310 248', 'M374 184 Q376 228 358 250'],
+    decomp: ['M330 270 L330 318', 'M282 330 L234 330 Q220 330 220 274'],
+    sed: ['M190 254 L144 254', 'M104 266 L104 296', 'M64 314 Q54 320 50 330']
+  },
+  steps: [
+    { t: 'The Phosphorus Cycle', f: 'all', d: "The phosphorus cycle is the <b>slowest</b> cycle. It has <b>no gas stage</b>, so phosphorus never enters the atmosphere. It moves between <b>rocks, soil, water and living things</b>.", x: "One trip around this cycle can take millions of years." },
+    { t: 'Weathering of Rock', s: [2], f: ['weath'], d: "Rain, wind and ice slowly <b>break rocks apart</b>, releasing <b>phosphate</b> into the soil and water.", x: "Phosphate = phosphorus joined with oxygen (PO\u2084\u00B3\u207B)." },
+    { t: 'Runoff', s: [3], f: ['runoff'], d: "Rainwater <b>carries phosphate</b> from weathered rock and soil into streams, lakes and the ocean.", x: "Fertilizer runoff adds extra phosphate to the water." },
+    { t: 'Plants & Animals', f: ['plant'], d: "Plant roots <b>absorb phosphate</b> from the soil and water. <b>Animals get phosphorus by eating plants</b> (or other animals).", x: "The rabbit on the diagram gets its phosphorus from the plants it eats." },
+    { t: 'Dead Organisms', s: [4], f: ['dead'], d: "When plants and animals <b>die</b> or leave waste, their phosphorus becomes part of <b>detritus</b> (dead organic matter).", x: "Detritus = dead leaves, dead animals and waste." },
+    { t: 'Bacteria in Soil (Decomposition)', s: [6], f: ['decomp'], d: "<b>Bacteria</b> and other decomposers in the soil break down dead organisms and <b>return phosphate to the soil</b>, ready for plants again.", x: "This is the fast loop of the cycle: soil \u2192 plants \u2192 animals \u2192 decomposers \u2192 soil." },
+    { t: 'Rock (Sediment)', s: [5], f: ['sed'], d: "In lakes and oceans, phosphate <b>settles to the bottom</b> as solid sediment. Over millions of years it becomes new <b>rock</b>.", x: "This is the slow loop of the cycle." },
+    { t: 'Uplifting of Rock', s: [1], f: ['uplift'], d: "Movements of Earth's plates slowly <b>push sea-floor rock up</b> to form new land and mountains. Then weathering starts the cycle again!", x: "Uplift takes millions of years, which is why this cycle is so slow." },
+    { t: 'Why It Matters', why: 1, f: 'all', d: "<ul><li>Phosphorus is in your <b>DNA, ATP</b> (cell energy), <b>cell membranes</b>, <b>bones and teeth</b>.</li><li>It is mined for <b>fertilizer</b>. Central Florida's <b>Bone Valley</b> is one of the biggest phosphate mining areas in the world!</li><li>Too much phosphate runoff causes <b>algae blooms</b> in lakes and rivers.</li></ul>" }
+  ],
+  quiz: [
+    { q: 'What makes the phosphorus cycle different from the other three cycles?', a: ['It has no gas stage in the atmosphere', 'It is the fastest cycle', 'It only happens in the ocean', 'Lightning drives it'], e: 'Phosphorus does not form a common gas, so it skips the atmosphere.' },
+    { q: 'Phosphate is released from rocks mainly by:', a: ['Weathering', 'Combustion', 'Transpiration', 'Nitrification'], e: 'Weathering breaks rocks down and releases phosphate.' },
+    { q: 'Which of these contains phosphorus?', a: ['DNA and ATP', 'Water (H\u2082O)', 'Carbon dioxide (CO\u2082)', 'Nitrogen gas (N\u2082)'], e: 'DNA and ATP both have phosphate groups.' },
+    { q: 'Dead organisms return phosphate to the soil with the help of:', a: ['Bacteria in soil (decomposers)', 'Photosynthesis', 'Evaporation', 'Lightning'], e: 'Decomposers break down dead matter and release phosphate.' },
+    { q: 'Sea-floor rock becomes new land through:', a: ['Uplifting of rock', 'Runoff', 'Condensation', 'Respiration'], e: 'Plate movements uplift rock over millions of years.' },
+    { q: 'How do animals get phosphorus?', a: ['By eating plants or other animals', 'By breathing it in', 'By absorbing it from rocks through their skin', 'From rain'], e: 'Phosphorus moves up the food chain.' },
+    { q: 'Central Florida (Bone Valley) is famous for mining:', a: ['Phosphate', 'Gold', 'Coal', 'Diamonds'], e: 'Florida is a major phosphate producer, mostly for fertilizer.' },
+    { q: 'Too much phosphate fertilizer washing into a lake causes:', a: ['Algae blooms (eutrophication)', 'Ocean acidification', 'More lightning', 'Sublimation'], e: 'Extra nutrients feed algae blooms that use up oxygen when they die.' }
+  ]
+}
+];
+
+/* ---------- STATE ---------- */
+var KEY = 'bgc_cycles_v1';
+var S = null;
+try { S = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { S = null; }
+if (!S || !S.c) S = { name: '', per: '', c: {}, doneAt: 0 };
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function cs(id) {
+  if (!S.c[id]) S.c[id] = { learn: false, lab: false, labOk: -1, labN: 0, quiz: false, qFirst: 0, qTot: 0 };
+  return S.c[id];
+}
+
+/* ---------- SOUND ---------- */
+var AC = null;
+function tone(f, d, type, v) {
+  try {
+    if (!AC) { var Ctor = window.AudioContext || window.webkitAudioContext; if (!Ctor) return; AC = new Ctor(); }
+    if (AC.state === 'suspended') AC.resume();
+    var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime;
+    o.type = type || 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(v || 0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d + 0.02);
+  } catch (e) {}
+}
+function sGood() { tone(660, 0.12); setTimeout(function () { tone(880, 0.2); }, 90); }
+function sBad() { tone(170, 0.28, 'square', 0.05); }
+function sTap() { tone(520, 0.05, 'triangle', 0.08); }
+function sWin() { var n = [523, 659, 784, 1047], i; for (i = 0; i < 4; i++) { (function (k) { setTimeout(function () { tone(n[k], 0.22, 'triangle', 0.12); }, k * 110); })(i); } }
+
+function toast(msg) {
+  var t = $('toast'); t.innerHTML = msg; t.style.display = 'block';
+  clearTimeout(toast.h); toast.h = setTimeout(function () { t.style.display = 'none'; }, 2200);
+}
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function shuffle(a) { var i, j, t; for (i = a.length - 1; i > 0; i--) { j = Math.floor(Math.random() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+/* ---------- SCREENS ---------- */
+var SCR = ['s_login', 's_hub', 's_cyc', 's_report'];
+function show(id) {
+  var i; for (i = 0; i < SCR.length; i++) { $(SCR[i]).style.display = (SCR[i] === id) ? 'block' : 'none'; }
+  if (id !== 's_cyc') stopAnim();
+  var w = $('who');
+  if (S.name && id !== 's_login') { w.style.display = 'block'; w.innerHTML = esc(S.name) + ' &bull; P' + esc(S.per); } else { w.style.display = 'none'; }
+  window.scrollTo(0, 0);
+}
+
+/* Login */
+(function () {
+  var sel = $('inPer'), i, o;
+  for (i = 1; i <= 8; i++) { o = document.createElement('option'); o.value = String(i); o.text = 'Period ' + i; sel.appendChild(o); }
+})();
+$('btnStart').onclick = function () {
+  var n = $('inName').value.replace(/^\s+|\s+$/g, ''), p = $('inPer').value;
+  if (n.length < 2 || n.indexOf(' ') < 0) { $('loginErr').innerHTML = 'Please type your first AND last name.'; sBad(); return; }
+  if (!p) { $('loginErr').innerHTML = 'Please choose your class period.'; sBad(); return; }
+  S.name = n; S.per = p; save(); sGood(); renderHub(); show('s_hub');
+};
+
+/* Hub */
+var switchArm = false;
+function allDone() { var i; for (i = 0; i < CY.length; i++) { if (!cs(CY[i].id).quiz) return false; } return true; }
+function renderHub() {
+  var h = '', i, c, st;
+  for (i = 0; i < CY.length; i++) {
+    c = CY[i]; st = cs(c.id);
+    h += '<button class="cc" style="border-color:' + c.col + '" onclick="openCycle(' + i + ')"><div class="ic">' + c.icon + '</div><h3 style="color:' + c.col + '">' + c.name + '</h3><div class="st">' +
+      (st.learn ? '&#x2705;' : '<i>&#x2B1C;</i>') + ' Learn<br>' +
+      (st.lab ? '&#x2705;' : '<i>&#x2B1C;</i>') + ' Label<br>' +
+      (st.quiz ? '&#x2705; Quiz ' + st.qFirst + '/' + st.qTot : '<i>&#x2B1C;</i> Quiz') + '</div></button>';
+  }
+  $('hubGrid').innerHTML = h;
+  $('btnReport').disabled = !allDone();
+  $('btnReport').innerHTML = allDone() ? '&#x1F4C4; Get My Report' : '&#x1F512; Report unlocks after all 4 quizzes';
+  switchArm = false; $('btnSwitch').innerHTML = 'Not you? Change student';
+}
+$('btnReport').onclick = function () { if (allDone()) { if (!S.doneAt) { S.doneAt = Date.now(); save(); } renderReport(); show('s_report'); sWin(); } };
+$('btnSwitch').onclick = function () {
+  if (!switchArm) { switchArm = true; this.innerHTML = 'Tap again to ERASE progress and change student'; return; }
+  S = { name: '', per: '', c: {}, doneAt: 0 }; save(); $('inName').value = ''; $('inPer').value = ''; show('s_login');
+};
+
+/* ---------- CYCLE SCREEN ---------- */
+var cur = null, mode = 'learn', stepI = 0, revealed = {}, zoomed = false;
+var parts = [], animOn = false, lastTs = 0;
+
+function openCycle(i) {
+  sTap();
+  cur = CY[i]; revealed = {}; zoomed = false;
+  var st = cs(cur.id), k;
+  if (st.learn) { for (k = 0; k < cur.slots.length; k++) revealed[cur.slots[k].n] = 1; }
+  $('cTitle').innerHTML = '<span style="color:' + cur.col + '">' + cur.icon + ' ' + cur.name + '</span>';
+  buildDiagram();
+  show('s_cyc');
+  setMode(!st.learn ? 'learn' : (!st.lab ? 'label' : 'quiz'));
+}
+$('btnBack').onclick = function () { renderHub(); show('s_hub'); };
+$('btnBack2').onclick = function () { renderHub(); show('s_hub'); };
+
+function buildDiagram() {
+  var c = cur, fl = '', k, j;
+  for (k in c.flows) { if (c.flows.hasOwnProperty(k)) { for (j = 0; j < c.flows[k].length; j++) { fl += '<path class="fl" data-k="' + k + '" d="' + c.flows[k][j] + '"/>'; } } }
+  $('dia').innerHTML = '<svg viewBox="0 0 ' + c.W + ' ' + c.H + '" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">' + defs(c.extraDefs) + c.scene() + '<g id="flg">' + fl + '</g><g id="pg"></g></svg><div id="ov"></div>';
+  var ov = $('ov'), h = '', s, i;
+  for (i = 0; i < c.slots.length; i++) {
+    s = c.slots[i];
+    h += '<div class="slot" id="sl' + s.n + '" data-n="' + s.n + '" style="left:' + (s.x / c.W * 100) + '%;top:' + (s.y / c.H * 100) + '%;width:' + (s.w / c.W * 100) + '%;height:' + (s.h / c.H * 100) + '%"></div>';
+  }
+  ov.innerHTML = h;
+  var els = ov.getElementsByClassName('slot');
+  for (i = 0; i < els.length; i++) { els[i].onclick = slotTap; }
+  $('dia').style.width = zoomed ? '175%' : '100%';
+  $('btnZoom').style.display = 'block';
+  $('btnZoom').innerHTML = zoomed ? '&#x1F50D; Fit' : '&#x1F50D; Zoom';
+  fit();
+}
+$('btnZoom').onclick = function () {
+  zoomed = !zoomed; $('dia').style.width = zoomed ? '175%' : '100%';
+  this.innerHTML = zoomed ? '&#x1F50D; Fit' : '&#x1F50D; Zoom'; fit(); sTap();
+};
+function fit() { if (!cur) return; var w = $('dia').clientWidth || 340; $('ov').style.fontSize = (w / cur.W * 8.3) + 'px'; }
+window.addEventListener('resize', fit);
+
+function setMode(m) {
+  var st = cs(cur.id);
+  if (m === 'label' && !st.learn) { toast('Finish Learn first!'); sBad(); return; }
+  if (m === 'quiz' && !st.lab) { toast('Finish Label first!'); sBad(); return; }
+  mode = m;
+  var tabs = [['learn', '1. Learn', true], ['label', '2. Label', st.learn], ['quiz', '3. Quiz', st.lab]], h = '', i, on;
+  for (i = 0; i < 3; i++) {
+    on = tabs[i][0] === m;
+    h += '<button class="tab' + (tabs[i][2] ? '' : ' lock') + '" style="' + (on ? 'background:' + cur.col + ';color:#06102a;border-color:' + cur.col : '') + '" onclick="setMode(\'' + tabs[i][0] + '\')">' + (tabs[i][2] ? '' : '&#x1F512; ') + tabs[i][1] + '</button>';
+  }
+  $('tabs').innerHTML = h;
+  $('diabox').style.display = (m === 'quiz') ? 'none' : 'block';
+  $('btnZoom').style.display = (m === 'quiz') ? 'none' : 'block';
+  if (m === 'learn') { stepI = 0; renderLearn(); }
+  else if (m === 'label') { startLabel(); }
+  else { startQuiz(); }
+  window.scrollTo(0, 0);
+}
+
+/* flows + particles */
+function setFlows(keys, dim) {
+  var paths = $('flg').getElementsByTagName('path'), pg = $('pg'), i, k, on, len, n, j, c;
+  while (pg.firstChild) pg.removeChild(pg.firstChild);
+  parts = [];
+  for (i = 0; i < paths.length; i++) {
+    k = paths[i].getAttribute('data-k');
+    on = keys === 'all' || (keys && keys.indexOf(k) >= 0);
+    paths[i].setAttribute('class', (on && !dim && keys !== 'all') ? 'fl on' : 'fl');
+    if (!on) continue;
+    try { len = paths[i].getTotalLength(); } catch (e) { len = 0; }
+    if (!len) continue;
+    n = (dim || keys === 'all') ? (len > 120 ? 2 : 1) : (len > 90 ? 4 : 3);
+    for (j = 0; j < n; j++) {
+      c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('r', (dim || keys === 'all') ? 2.4 : 3.2);
+      c.setAttribute('fill', cur.pc[0]); c.setAttribute('stroke', cur.pc[1]); c.setAttribute('stroke-width', '1');
+      pg.appendChild(c);
+      parts.push({ p: paths[i], c: c, len: len, o: len * j / n, sp: dim ? 26 : 38 });
+    }
+  }
+  startAnim();
+}
+function startAnim() { if (animOn) return; animOn = true; lastTs = 0; requestAnimationFrame(tick); }
+function stopAnim() { animOn = false; }
+function tick(ts) {
+  if (!animOn) return;
+  var t = ts / 1000, i, q, d, pt, f;
+  for (i = 0; i < parts.length; i++) {
+    q = parts[i]; d = (q.o + t * q.sp) % q.len;
+    try { pt = q.p.getPointAtLength(d); } catch (e) { continue; }
+    q.c.setAttribute('cx', pt.x.toFixed(1)); q.c.setAttribute('cy', pt.y.toFixed(1));
+    f = Math.min(1, d / 12, (q.len - d) / 12);
+    q.c.setAttribute('opacity', f.toFixed(2));
+  }
+  requestAnimationFrame(tick);
+}
+
+function slotByN(n) { var i; for (i = 0; i < cur.slots.length; i++) { if (cur.slots[i].n === n) return cur.slots[i]; } return null; }
+
+/* ---------- LEARN ---------- */
+function renderLearn() {
+  var s = cur.steps[stepI], i, h = '', sl, el, hot = {}, last = stepI === cur.steps.length - 1;
+  if (s.s) { for (i = 0; i < s.s.length; i++) { revealed[s.s[i]] = 1; hot[s.s[i]] = 1; } }
+  for (i = 0; i < cur.slots.length; i++) {
+    sl = cur.slots[i]; el = $('sl' + sl.n);
+    el.style.whiteSpace = sl.a.length > 20 ? 'normal' : 'nowrap';
+    el.innerHTML = '<b>' + sl.n + '.</b>' + (revealed[sl.n] ? esc(sl.a) : '');
+    el.className = 'slot' + (revealed[sl.n] ? ' rev' : '') + (hot[sl.n] ? ' hot' : '');
+  }
+  setFlows(s.f);
+  h += '<div class="stepn">LEARN &bull; ' + (stepI + 1) + ' of ' + cur.steps.length + '</div><div class="dots">';
+  for (i = 0; i < cur.steps.length; i++) h += '<div class="dot' + (i <= stepI ? ' on' : '') + '" style="' + (i === stepI ? 'background:' + cur.col : '') + '"></div>';
+  h += '</div>';
+  h += '<div class="term" style="color:' + cur.col + '">' + (s.why ? '&#x1F30E; ' : '') + s.t + '</div>';
+  if (s.s) { for (i = 0; i < s.s.length; i++) h += '<span class="wb">Worksheet box #' + s.s[i] + '</span>'; }
+  else if (!s.why && stepI > 0) h += '<span class="wb" style="background:#2c3d80">Bonus term</span>';
+  h += '<div class="def' + (s.why ? ' why' : '') + '">' + s.d + '</div>';
+  if (s.x) h += '<div class="dyk" style="border-color:' + cur.col + '"><b>&#x1F4A1; </b>' + s.x + '</div>';
+  h += '<div class="row" style="margin-top:12px"><button class="btn ghost" id="lPrev"' + (stepI === 0 ? ' disabled' : '') + '>&larr; Back</button>';
+  h += '<button class="btn" id="lNext" style="background:' + cur.col + '">' + (last ? 'Done! Go Label &rarr;' : 'Next &rarr;') + '</button></div>';
+  $('panel').innerHTML = h;
+  $('lPrev').onclick = function () { if (stepI > 0) { stepI--; sTap(); renderLearn(); scrollPanel(); } };
+  $('lNext').onclick = function () {
+    if (!last) { stepI++; sTap(); renderLearn(); scrollPanel(); return; }
+    var st = cs(cur.id); st.learn = true; save(); sGood(); toast('Learn complete! Now label the diagram.'); setMode('label');
+  };
+}
+function scrollPanel() { var y = $('diabox').getBoundingClientRect().top + window.pageYOffset - 8; if (window.pageYOffset > y) window.scrollTo(0, y); }
+
+/* ---------- LABEL ---------- */
+var sel = null, placed = {}, checked = false;
+function startLabel() {
+  sel = null; placed = {}; checked = false;
+  setFlows('all', true);
+  renderSlotsLabel();
+  renderLabelPanel();
+}
+function renderSlotsLabel(res) {
+  var i, sl, el, cls;
+  for (i = 0; i < cur.slots.length; i++) {
+    sl = cur.slots[i]; el = $('sl' + sl.n);
+    el.style.whiteSpace = (placed[sl.n] && placed[sl.n].length > 20) ? 'normal' : 'nowrap';
+    el.innerHTML = '<b>' + sl.n + '.</b>' + (placed[sl.n] ? esc(placed[sl.n]) : '');
+    cls = 'slot';
+    if (res && placed[sl.n]) cls += (placed[sl.n] === sl.a) ? ' ok' : ' bad';
+    if (sel && !(res && placed[sl.n] === sl.a)) cls += ' tgt';
+    el.className = cls;
+  }
+}
+function renderLabelPanel(msg) {
+  var st = cs(cur.id), h = '', i;
+  h += '<div class="stepn">LABEL THE ' + cur.name.toUpperCase() + '</div>';
+  h += '<div class="hint" style="margin:4px 0 2px">Tap a word, then tap its box on the diagram. Tap a filled box to clear it. ' + (cur.id === 'water' ? '<b>One word is used twice.</b>' : (cur.id === 'nitrogen' ? '<b>One word is used twice.</b>' : '')) + ' Use the <b>Zoom</b> button if the boxes are small.</div>';
+  h += '<div class="bank">';
+  for (i = 0; i < cur.bank.length; i++) h += '<button class="w' + (sel === cur.bank[i] ? ' sel' : '') + '" data-i="' + i + '">' + esc(cur.bank[i]) + '</button>';
+  h += '</div>';
+  if (msg) h += '<div class="fb">' + msg + '</div>';
+  if (st.lab && checked === 'done') {
+    h += '<button class="btn" id="goQuiz" style="background:' + cur.col + '">Go to the Quiz &rarr;</button>';
+  } else {
+    h += '<div class="row"><button class="btn ghost" id="lbReset">Clear</button><button class="btn" id="lbCheck" style="background:' + cur.col + '">Check My Labels</button></div>';
+  }
+  $('panel').innerHTML = h;
+  var ws = $('panel').getElementsByClassName('w');
+  for (i = 0; i < ws.length; i++) {
+    ws[i].onclick = function () {
+      var t = cur.bank[+this.getAttribute('data-i')];
+      sel = (sel === t) ? null : t; sTap(); renderSlotsLabel(checked === true); renderLabelPanel();
+    };
+  }
+  if ($('goQuiz')) $('goQuiz').onclick = function () { setMode('quiz'); };
+  if ($('lbReset')) $('lbReset').onclick = function () { placed = {}; sel = null; checked = false; renderSlotsLabel(); renderLabelPanel(); };
+  if ($('lbCheck')) $('lbCheck').onclick = checkLabels;
+}
+function slotTap() {
+  var n = +this.getAttribute('data-n');
+  if (mode !== 'label') { var s = slotByN(n); if (s && revealed[n]) toast(n + '. ' + esc(s.a)); return; }
+  if (checked === 'done') return;
+  var sl = slotByN(n);
+  if (checked === true && placed[n] === sl.a) { toast('That one is already correct!'); return; }
+  if (sel) { placed[n] = sel; sel = null; sTap(); }
+  else if (placed[n]) { delete placed[n]; sTap(); }
+  else { toast('Tap a word first'); return; }
+  checked = checked === true ? true : false;
+  renderSlotsLabel(checked === true); renderLabelPanel();
+}
+function checkLabels() {
+  var st = cs(cur.id), i, ok = 0, filled = 0, sl;
+  for (i = 0; i < cur.slots.length; i++) { sl = cur.slots[i]; if (placed[sl.n]) filled++; if (placed[sl.n] === sl.a) ok++; }
+  if (filled < cur.slots.length) { toast('Fill every box first (' + filled + '/' + cur.slots.length + ')'); sBad(); return; }
+  if (st.labOk < 0) { st.labOk = ok; st.labN = cur.slots.length; save(); }
+  sel = null;
+  if (ok === cur.slots.length) {
+    st.lab = true; save(); checked = 'done'; sWin();
+    renderSlotsLabel(true);
+    renderLabelPanel('&#x1F389; <b>All ' + ok + ' correct!</b> Copy these onto your paper worksheet now.');
+    toast('Perfect labels!');
+  } else {
+    checked = true; sBad();
+    renderSlotsLabel(true);
+    renderLabelPanel('<b>' + ok + ' of ' + cur.slots.length + ' correct.</b> Fix the <span style="color:#ff6b8b">red</span> boxes and check again. Tip: look at where the arrows point.');
+  }
+}
+
+/* ---------- QUIZ ---------- */
+var Q = null;
+function startQuiz() {
+  stopAnim();
+  var i, ord = [];
+  for (i = 0; i < cur.quiz.length; i++) ord.push(i);
+  Q = { queue: shuffle(ord), seen: {}, first: 0, done: 0, answered: false };
+  renderQ();
+}
+function renderQ() {
+  var st = cs(cur.id), h = '', i;
+  if (!Q.queue.length) {
+    var tot = cur.quiz.length, firstTime = !st.quiz;
+    if (firstTime) { st.quiz = true; st.qFirst = Q.first; st.qTot = tot; save(); }
+    sWin();
+    h += '<div class="stepn">QUIZ COMPLETE</div><div class="big" style="color:' + cur.col + '">' + Q.first + ' / ' + tot + '</div>';
+    h += '<div class="hint" style="text-align:center">correct on the first try' + (firstTime ? '' : '<br>(Practice round. Your report keeps your first score: ' + st.qFirst + '/' + st.qTot + ')') + '</div>';
+    h += '<button class="btn" id="qHub" style="background:' + cur.col + '">' + (allDone() ? '&#x1F4C4; All cycles done! Get my report' : 'Back to the Cycles &rarr;') + '</button>';
+    h += '<button class="btn ghost" id="qAgain">Practice again</button>';
+    $('panel').innerHTML = h;
+    $('qHub').onclick = function () { if (allDone()) { $('btnReport').onclick(); } else { renderHub(); show('s_hub'); } };
+    $('qAgain').onclick = startQuiz;
+    return;
+  }
+  var qi = Q.queue[0], q = cur.quiz[qi], opts = [];
+  for (i = 0; i < q.a.length; i++) opts.push(i);
+  shuffle(opts);
+  Q.answered = false; Q.opts = opts;
+  h += '<div class="stepn">QUIZ &bull; ' + Q.done + ' of ' + cur.quiz.length + ' mastered &bull; first-try correct: ' + Q.first + '</div>';
+  if (Q.seen[qi]) h += '<div class="wb" style="background:#2c3d80;margin-top:6px">Try this one again</div>';
+  h += '<div class="q">' + q.q + '</div>';
+  for (i = 0; i < opts.length; i++) h += '<button class="opt" data-o="' + opts[i] + '">' + q.a[opts[i]] + '</button>';
+  h += '<div id="qfb"></div>';
+  $('panel').innerHTML = h;
+  var bs = $('panel').getElementsByClassName('opt');
+  for (i = 0; i < bs.length; i++) bs[i].onclick = answerQ;
+}
+function answerQ() {
+  if (Q.answered) return; Q.answered = true;
+  var qi = Q.queue[0], q = cur.quiz[qi], pick = +this.getAttribute('data-o'), bs = $('panel').getElementsByClassName('opt'), i, ok = pick === 0;
+  for (i = 0; i < bs.length; i++) { if (+bs[i].getAttribute('data-o') === 0) bs[i].className = 'opt ok'; }
+  if (ok) {
+    if (!Q.seen[qi]) Q.first++;
+    Q.done++; Q.queue.shift(); sGood();
+  } else {
+    this.className = 'opt bad'; Q.queue.push(Q.queue.shift()); sBad();
+  }
+  Q.seen[qi] = true;
+  $('qfb').innerHTML = '<div class="fb"><b style="color:' + (ok ? '#2bff7a' : '#ff6b8b') + '">' + (ok ? 'Correct!' : 'Not quite. This question will come back.') + '</b><br>' + q.e + '</div><button class="btn" id="qNext" style="background:' + cur.col + '">Next &rarr;</button>';
+  $('qNext').onclick = renderQ;
+}
+
+/* ---------- REPORT ---------- */
+function fmtTime(ms) {
+  var d = new Date(ms), m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var h = d.getHours(), ap = h >= 12 ? 'PM' : 'AM', mi = d.getMinutes();
+  h = h % 12; if (h === 0) h = 12;
+  return m[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + ' ' + h + ':' + (mi < 10 ? '0' : '') + mi + ' ' + ap;
+}
+function totals() {
+  var i, st, a = 0, b = 0;
+  for (i = 0; i < CY.length; i++) { st = cs(CY[i].id); a += st.qFirst; b += st.qTot; }
+  return [a, b];
+}
+function renderReport() {
+  var h = '', i, st, t = totals(), now = Date.now();
+  h += '<div class="ph"><b>THE BIOGEOCHEMICAL CYCLES</b><span>Review Completion Report</span></div><div class="pb">';
+  h += '<div class="info"><b>Name:</b> ' + esc(S.name) + '<br><b>Period:</b> ' + esc(S.per) + '<br><b>Completed:</b> ' + fmtTime(S.doneAt) + '<br><b>Report time:</b> ' + fmtTime(now) + '</div>';
+  h += '<table><tr><th>Cycle</th><th>Learn</th><th>Label<br>1st check</th><th>Quiz<br>1st try</th></tr>';
+  for (i = 0; i < CY.length; i++) {
+    st = cs(CY[i].id);
+    h += '<tr><td style="text-align:left"><b>' + CY[i].name + '</b></td><td>' + (st.learn ? '&#x2714;' : '-') + '</td><td>' + (st.labOk >= 0 ? st.labOk + '/' + st.labN : '-') + '</td><td><b>' + st.qFirst + '/' + st.qTot + '</b></td></tr>';
+  }
+  h += '</table><div class="tot">Total quiz score (first try): ' + t[0] + ' / ' + t[1] + ' (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)</div>';
+  h += '<div class="ft">All four cycles completed: Learn, Label (all correct) and Quiz (all mastered).</div></div>';
+  $('page').innerHTML = h;
+}
+
+/* Minimal one-page PDF writer (Helvetica, no libraries) */
+function pdfStr(s) { return String(s).replace(/[^\x20-\x7E]/g, '?').replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
+function makePdf() {
+  var c = [], t = totals(), i, st, y;
+  function txt(x, yy, s, sz, bold, col) { c.push((col || '0 0 0') + ' rg BT /' + (bold ? 'F2' : 'F1') + ' ' + sz + ' Tf ' + x + ' ' + yy + ' Td (' + pdfStr(s) + ') Tj ET'); }
+  function rect(x, yy, w, h, col, stroke) { c.push((stroke ? col + ' RG 0.8 w ' : col + ' rg ') + x + ' ' + yy + ' ' + w + ' ' + h + ' re ' + (stroke ? 'S' : 'f')); }
+  rect(0, 700, 612, 92, '0.07 0.11 0.25');
+  txt(40, 752, 'THE BIOGEOCHEMICAL CYCLES', 24, 1, '1 1 1');
+  txt(40, 726, 'Review Completion Report - Water, Carbon, Nitrogen, Phosphorus', 12, 0, '0.62 0.85 1');
+  txt(40, 660, 'Name:', 14, 1); txt(130, 660, S.name, 14, 0);
+  txt(40, 638, 'Period:', 14, 1); txt(130, 638, S.per, 14, 0);
+  txt(40, 616, 'Completed:', 14, 1); txt(130, 616, fmtTime(S.doneAt), 14, 0);
+  txt(40, 594, 'Report time:', 14, 1); txt(130, 594, fmtTime(Date.now()), 14, 0);
+  y = 540;
+  rect(40, y, 532, 26, '0.91 0.93 0.99');
+  txt(50, y + 9, 'Cycle', 12, 1); txt(250, y + 9, 'Learn', 12, 1); txt(340, y + 9, 'Label (1st check)', 12, 1); txt(470, y + 9, 'Quiz (1st try)', 12, 1);
+  for (i = 0; i < CY.length; i++) {
+    st = cs(CY[i].id); y -= 26;
+    rect(40, y, 532, 26, '0.5 0.5 0.5', 1);
+    txt(50, y + 9, CY[i].name, 12, 1);
+    txt(255, y + 9, st.learn ? 'Done' : '-', 12, 0);
+    txt(370, y + 9, st.labOk >= 0 ? (st.labOk + '/' + st.labN) : '-', 12, 0);
+    txt(495, y + 9, st.qFirst + '/' + st.qTot, 12, 1);
+  }
+  rect(40, 540, 532, 26, '0.5 0.5 0.5', 1);
+  txt(40, y - 34, 'Total quiz score (first try): ' + t[0] + ' / ' + t[1] + '  (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)', 15, 1);
+  txt(40, y - 58, 'All four cycles completed: Learn, Label (all correct) and Quiz (all questions mastered).', 11, 0, '0.3 0.3 0.3');
+  txt(40, 60, 'Submit this report on Canvas.', 11, 0, '0.3 0.3 0.3');
+  var stream = c.join('\n');
+  var objs = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>',
+    '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'
+  ];
+  var out = '%PDF-1.4\n', offs = [], k;
+  for (k = 0; k < objs.length; k++) { offs.push(out.length); out += (k + 1) + ' 0 obj\n' + objs[k] + '\nendobj\n'; }
+  var xr = out.length;
+  out += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n';
+  for (k = 0; k < offs.length; k++) out += ('0000000000' + offs[k]).slice(-10) + ' 00000 n \n';
+  out += 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xr + '\n%%EOF';
+  return out;
+}
+$('btnPdf').onclick = function () {
+  try {
+    var data = makePdf(), blob = new Blob([data], { type: 'application/pdf' }), url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'BiogeochemicalCycles_' + S.name.replace(/[^A-Za-z0-9]+/g, '_') + '_P' + S.per + '.pdf';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    sGood();
+  } catch (e) { toast('Could not make the PDF. Take a screenshot instead!'); }
+};
+
+/* ---------- BOOT ---------- */
+if (S.name) { renderHub(); show('s_hub'); } else { show('s_login'); }
+</script>
+</body>
+</html>
+
