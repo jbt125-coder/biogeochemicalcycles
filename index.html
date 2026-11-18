@@ -93,6 +93,9 @@ input,select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border
 .page th{background:#e8eefc}
 .page .tot{font-size:15px;font-weight:800;margin-top:10px}
 .page .ft{font-size:11px;color:#555;margin-top:10px}
+.lb{margin:6px 0 12px;background:#16204a;color:#9fb3ff;border:1px solid #2c3d80}
+.lb.on{background:#29d3ff;color:#06102a;border-color:#29d3ff}
+.ent{font-size:12.5px;color:#9fb3ff;margin:-2px 0 6px}
 .shot{background:#ff2d95;color:#fff;border-radius:12px;padding:12px;font-weight:800;text-align:center;font-size:15px;margin:10px 0;line-height:1.35}
 #toast{position:fixed;left:50%;bottom:40px;-webkit-transform:translateX(-50%);transform:translateX(-50%);background:#ff2d95;color:#fff;padding:11px 18px;border-radius:22px;font-weight:800;display:none;z-index:20;box-shadow:0 0 20px #ff2d95;text-align:center;max-width:80%}
 </style>
@@ -100,31 +103,33 @@ input,select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border
 <body>
 <div id="app">
   <div class="top">
-    <div class="logo">THE <span>BIOGEOCHEMICAL</span> CYCLES</div>
+    <div class="logo" data-t="logo">THE <span>BIOGEOCHEMICAL</span> CYCLES</div>
     <div class="chip" id="who" style="display:none"></div>
   </div>
 
   <div id="s_login" style="display:none">
     <div class="card hero">
       <div class="ics">&#x1F4A7;&#x1F333;&#x26A1;&#x1F9B4;</div>
-      <h2>THE BIOGEOCHEMICAL CYCLES</h2>
-      <p>Water &bull; Carbon &bull; Nitrogen &bull; Phosphorus</p>
-      <p>Learn how each element moves through Earth, label the cycle like your worksheet, then prove it on the quiz.</p>
+      <h2 data-t="heroT">THE BIOGEOCHEMICAL CYCLES</h2>
+      <p data-t="heroS">Water &bull; Carbon &bull; Nitrogen &bull; Phosphorus</p>
+      <p data-t="heroP">Learn how each element moves through Earth, label the cycle like your worksheet, then prove it on the quiz.</p>
     </div>
     <div class="card">
-      <label for="inName">First and last name</label>
+      <label>Language / Idioma</label>
+      <div class="row"><button class="btn small lb" data-l="en">English</button><button class="btn small lb" data-l="es">Espa&ntilde;ol</button></div>
+      <label for="inName" data-t="nameL">First and last name</label>
       <input id="inName" type="text" autocomplete="off" autocapitalize="words" placeholder="Your name">
-      <label for="inPer">Class period</label>
+      <label for="inPer" data-t="perL">Class period</label>
       <select id="inPer"><option value="">Choose your period</option></select>
       <div class="err" id="loginErr"></div>
-      <button class="btn" id="btnStart">Start</button>
+      <button class="btn" id="btnStart" data-t="start">Start</button>
     </div>
   </div>
 
   <div id="s_hub" style="display:none">
     <div class="card" style="padding:12px 14px">
-      <div style="font-weight:800;font-size:15px">Pick a cycle (any order)</div>
-      <div class="hint">Each cycle: <b>1. Learn</b> &rarr; <b>2. Label</b> &rarr; <b>3. Quiz</b>. Finish all four to unlock your report for Canvas.</div>
+      <div style="font-weight:800;font-size:15px" data-t="hubT">Pick a cycle (any order)</div>
+      <div class="hint" data-t="hubH">Each cycle: <b>1. Learn</b> &rarr; <b>2. Label</b> &rarr; <b>3. Quiz</b>. Finish all four to unlock your report for Canvas.</div>
     </div>
     <div class="grid" id="hubGrid"></div>
     <button class="btn" id="btnReport" disabled>&#x1F4C4; Get My Report</button>
@@ -133,7 +138,7 @@ input,select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border
 
   <div id="s_cyc" style="display:none">
     <div class="bar">
-      <button class="back" id="btnBack">&larr; Cycles</button>
+      <button class="back" id="btnBack" data-t="backC">&larr; Cycles</button>
       <div class="ctitle" id="cTitle"></div>
       <button class="back" id="btnZoom" style="display:none"></button>
     </div>
@@ -145,10 +150,10 @@ input,select{width:100%;box-sizing:border-box;font-size:17px;padding:12px;border
   </div>
 
   <div id="s_report" style="display:none">
-    <div class="bar"><button class="back" id="btnBack2">&larr; Cycles</button><div class="ctitle">My Report</div></div>
-    <div class="shot">&#x1F4F8; Take a SCREENSHOT of this page and submit it on Canvas.</div>
+    <div class="bar"><button class="back" id="btnBack2" data-t="backC">&larr; Cycles</button><div class="ctitle" data-t="myRep">My Report</div></div>
+    <div class="shot" data-t="shot">&#x1F4F8; Take a SCREENSHOT of this page and submit it on Canvas.</div>
     <div class="page" id="page"></div>
-    <button class="btn" id="btnPdf">&#x2B07;&#xFE0F; Download PDF copy</button>
+    <button class="btn" id="btnPdf" data-t="pdf">&#x2B07;&#xFE0F; Download PDF copy</button>
   </div>
 </div>
 <div id="toast"></div>
@@ -173,6 +178,7 @@ function A(d, c, w, m, ex) {
 function T(x, y, t, sz, fill, anc, wt, ex) {
   return '<text x="' + x + '" y="' + y + '" font-size="' + (sz || 8) + '" fill="' + (fill || '#111') + '" text-anchor="' + (anc || 'middle') + '" font-weight="' + (wt || 'bold') + '" font-family="Arial,Helvetica,sans-serif"' + (ex || '') + '>' + t + '</text>';
 }
+function tx(en, es) { return LANG === 'es' ? es : en; }
 function C(x, y, r, f, ex) { return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + f + '"' + (ex || '') + '/>'; }
 function cloud(x, y, s, f, sh) {
   var p = [[-20, 4, 11], [-6, -4, 14], [10, -2, 12], [22, 5, 9], [0, 7, 12], [-12, 8, 9]], o = '', i;
@@ -182,6 +188,8 @@ function cloud(x, y, s, f, sh) {
 }
 function pbox(x, y, w, h, fill, lines, sz, tc) {
   var o = '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" fill="' + fill + '" stroke="#222" stroke-width="1"/>';
+  var i0, mw = 0; for (i0 = 0; i0 < lines.length; i0++) mw = Math.max(mw, lines[i0].length * 0.6);
+  if (mw * sz > w - 4) sz = (w - 4) / mw;
   var lh = sz * 1.15, y0 = y + h / 2 - (lines.length - 1) * lh / 2 + sz * 0.35, i;
   for (i = 0; i < lines.length; i++) { o += T(x + w / 2, y0 + i * lh, lines[i], sz, tc || '#111'); }
   return o;
@@ -191,8 +199,8 @@ function pbox(x, y, w, h, fill, lines, sz, tc) {
 function sceneWater() {
   var o = '', i, x;
   o += '<rect x="0" y="0" width="400" height="260" fill="url(#gW)"/>';
-  o += T(200, 13, 'The Water Cycle', 12, '#1430c8', 'middle', '900');
-  o += T(200, 23, '(The Hydrologic Cycle)', 8, '#1430c8');
+  o += T(200, 13, tx('The Water Cycle', 'El ciclo del agua'), 12, '#1430c8', 'middle', '900');
+  o += T(200, 23, tx('(The Hydrologic Cycle)', '(El ciclo hidrol\u00F3gico)'), 8, '#1430c8');
   o += C(378, 20, 11, '#ffe14d');
   o += '<path d="M266 196 Q300 188 400 186 L400 260 L250 260 Z" fill="#1f7fd8"/>';
   o += '<path d="M266 196 Q300 188 400 186" stroke="#9fdcff" stroke-width="2" fill="none"/>';
@@ -212,12 +220,12 @@ function sceneWater() {
   for (i = 0; i < 4; i++) { x = lx[i]; o += A('M' + x + ' 196 L' + x + ' 174', '#e0201b', 2, 'mR', ' stroke-dasharray="2 2"') + A('M' + x + ' 148 L' + x + ' 116', '#e0201b', 2.2, 'mR'); }
   var rx = [332, 348, 364, 380];
   for (i = 0; i < 4; i++) { x = rx[i]; o += A('M' + x + ' 232 L' + x + ' 194', '#e0201b', 2, 'mR', ' stroke-dasharray="2 2"') + A('M' + x + ' 170 L' + x + ' 126', '#e0201b', 2.2, 'mR'); }
-  o += T(346, 119, '(Clouds form)', 8, '#111');
+  o += T(346, 119, tx('(Clouds form)', '(Se forman nubes)'), 8, '#111');
   o += A('M226 166 L248 192', '#e0201b', 2.2, 'mR');
-  o += T(232, 140, 'Surface', 10, '#111');
-  o += T(160, 196, 'Subsurface', 8, '#111') + T(160, 205, '(underground)', 7.5, '#111');
+  o += T(232, 140, tx('Surface', 'Superficie'), 10, '#111');
+  o += T(160, 196, tx('Subsurface', 'Subsuelo'), 8, '#111') + T(160, 205, tx('(underground)', '(bajo tierra)'), 7.5, '#111');
   o += A('M190 208 L236 222', '#111', 1.2, 'mK', ' stroke-dasharray="2 2"');
-  o += T(150, 253, 'groundwater / aquifer', 7, '#fff', 'middle', 'bold', ' font-style="italic"');
+  o += T(150, 253, tx('groundwater / aquifer', 'agua subterr\u00E1nea / acu\u00EDfero'), LANG === 'es' ? 5.6 : 7, '#fff', 'middle', 'bold', ' font-style="italic"');
   return o;
 }
 
@@ -235,7 +243,7 @@ function sceneCarbon() {
   o += '<rect x="4" y="132" width="40" height="20" fill="#9aa3ad" stroke="#555" stroke-width=".6"/>';
   o += '<rect x="9" y="112" width="4" height="20" fill="#7d8690"/><rect x="17" y="108" width="4" height="24" fill="#7d8690"/><rect x="25" y="114" width="4" height="18" fill="#7d8690"/>';
   o += C(13, 104, 4, '#eee') + C(17, 96, 5, '#e6e6e6') + C(21, 87, 6, '#efefef');
-  o += pbox(6, 236, 64, 16, '#3a2a1a', ['FOSSIL FUELS'], 7, '#fff');
+  o += pbox(6, 236, 64, 16, '#3a2a1a', (LANG === 'es' ? ['COMBUSTIBLES', 'F\u00D3SILES'] : ['FOSSIL FUELS']), LANG === 'es' ? 6.2 : 7, '#fff');
   o += '<rect x="116" y="124" width="8" height="32" fill="#6b4a2b"/>';
   var tc = [[100, 118, 20], [122, 104, 24], [144, 118, 20], [120, 130, 18], [106, 102, 14]];
   for (i = 0; i < tc.length; i++) { o += C(tc[i][0], tc[i][1], tc[i][2], (i % 2) ? '#4ea63f' : '#3e8e34'); }
@@ -244,10 +252,10 @@ function sceneCarbon() {
   o += A('M163 151 L162 159', '#5a3519', 1.4) + A('M176 151 L177 159', '#5a3519', 1.4) + A('M183 136 L186 130 M183 136 L180 130', '#5a3519', 1);
   o += '<ellipse cx="292" cy="204" rx="7" ry="3" fill="#e9893a"/><path d="M285 204 L280 200 L280 208 Z" fill="#e9893a"/>';
   o += A('M336 238 Q330 225 336 212 Q342 200 336 192', '#2f8a3a', 2) + A('M346 238 Q352 226 346 214', '#2f8a3a', 2);
-  o += pbox(150, 6, 110, 26, '#f6b52e', ['CO\u2082 in ATMOSPHERE'], 9.5);
-  o += pbox(90, 108, 62, 15, '#f6b52e', ['LAND PLANTS'], 7.5);
-  o += pbox(44, 176, 44, 15, '#f6b52e', ['SOILS'], 7.5);
-  o += pbox(328, 188, 52, 17, '#f6b52e', ['OCEAN'], 8);
+  o += pbox(150, 6, 110, 26, '#f6b52e', [tx('CO\u2082 in ATMOSPHERE', 'CO\u2082 en la ATM\u00D3SFERA')], 9.5);
+  o += pbox(90, 108, 62, 15, '#f6b52e', (LANG === 'es' ? ['PLANTAS', 'TERRESTRES'] : ['LAND PLANTS']), LANG === 'es' ? 6 : 7.5);
+  o += pbox(44, 176, 44, 15, '#f6b52e', [tx('SOILS', 'SUELOS')], 7.5);
+  o += pbox(328, 188, 52, 17, '#f6b52e', [tx('OCEAN', 'OC\u00C9ANO')], 8);
   o += A('M20 108 Q26 36 146 17', '#1c2a6b', 2.4, 'mN');
   o += A('M22 234 L22 158', '#1c2a6b', 2.4, 'mN');
   o += A('M160 36 L151 92', '#9a9a9a', 6, 'mG');
@@ -272,14 +280,14 @@ function sceneNitrogen() {
   o += '<rect x="12" y="80" width="4" height="26" fill="#222"/><rect x="21" y="78" width="4" height="28" fill="#222"/><rect x="30" y="82" width="4" height="24" fill="#222"/>';
   for (i = 0; i < 5; i++) { o += '<rect x="' + (9 + i * 10) + '" y="114" width="5" height="5" fill="#ddd"/>'; }
   o += A('M14 78 Q8 66 16 56 Q22 48 14 38', '#d0d0d0', 2.2) + A('M23 76 Q30 64 22 54', '#d0d0d0', 2);
-  o += T(48, 62, 'Fossil Fuel', 8.5) + T(48, 72, 'Emissions', 8.5);
+  o += (LANG === 'es' ? T(50, 56, 'Emisiones de', 8) + T(50, 65, 'combustibles', 8) + T(50, 74, 'f\u00F3siles', 8) : T(48, 62, 'Fossil Fuel', 8.5) + T(48, 72, 'Emissions', 8.5));
   o += A('M70 64 Q100 44 128 36', '#e0201b', 1.8, 'mR');
   o += cloud(160, 28, 1.25, '#e9edf2', '#a3abb5');
-  o += T(160, 32, 'Precipitation', 8.5, '#222');
+  o += T(160, 32, tx('Precipitation', 'Precipitaci\u00F3n'), 8.5, '#222');
   for (i = 0; i < 9; i++) { o += A('M' + (132 + i * 7) + ' 46 L' + (128 + i * 7) + ' 86', '#7f97b5', .8, '', ' stroke-dasharray="1.5 2.5"'); }
   o += '<polyline points="150,44 158,60 151,62 162,90" fill="none" stroke="#d8ff3b" stroke-width="2"/>';
   o += '<polyline points="172,46 178,62 172,63 180,84" fill="none" stroke="#d8ff3b" stroke-width="1.6"/>';
-  o += T(300, 16, 'Gaseous', 8.5) + T(300, 26, 'Atmospheric', 8.5) + T(300, 36, 'Nitrogen', 8.5) + T(300, 46, 'Store', 8.5);
+  o += T(300, 16, tx('Gaseous', 'Reserva'), 8.5) + T(300, 26, tx('Atmospheric', 'de nitr\u00F3geno'), 8.5) + T(300, 36, tx('Nitrogen', 'atmosf\u00E9rico'), 8.5) + T(300, 46, tx('Store', 'gaseoso'), 8.5);
   o += cloud(352, 66, 1.05, '#fff', '#c3ccd6');
   var hs = [44, 52, 40, 56, 46, 60, 42, 54, 48];
   for (i = 0; i < 9; i++) { x = 124 + i * 9; h = hs[i]; o += '<polygon points="' + (x - 8) + ',126 ' + x + ',' + (126 - h) + ' ' + (x + 8) + ',126" fill="' + ['#2e7d32', '#43a047', '#1b5e20'][i % 3] + '"/>'; }
@@ -289,20 +297,20 @@ function sceneNitrogen() {
   o += '<rect x="214" y="110" width="26" height="9" fill="#d32f2f"/><rect x="230" y="99" width="10" height="11" fill="none" stroke="#333" stroke-width="1.2"/>';
   o += C(220, 121, 6, '#222') + C(220, 121, 2.5, '#d32f2f') + C(238, 122, 4, '#222');
   o += A('M152 122 L152 136', '#e0201b', 1.8, 'mR');
-  o += T(152, 147, 'Organic Matter', 9) + T(152, 157, '(R-NH\u2082)', 8);
+  o += T(152, 147, tx('Organic Matter', 'Materia org\u00E1nica'), 9) + T(152, 157, '(R-NH\u2082)', 8);
   o += A('M176 156 Q206 166 230 176', '#e0201b', 1.8, 'mR');
-  o += T(204, 176, 'Mineralization', 7, '#2c7a3a');
-  o += T(252, 184, 'Ammonium', 9) + T(252, 194, '(NH\u2084\u207A)', 8);
+  o += T(204, 176, tx('Mineralization', 'Mineralizaci\u00F3n'), 7, '#2c7a3a');
+  o += T(252, 184, tx('Ammonium', 'Amonio'), 9) + T(252, 194, '(NH\u2084\u207A)', 8);
   o += A('M256 198 Q262 208 248 213', '#e0201b', 1.8, 'mR');
-  o += T(236, 222, 'Nitrites', 9) + T(236, 232, '(NO\u2082\u207B)', 8);
+  o += T(236, 222, tx('Nitrites', 'Nitritos'), 9) + T(236, 232, '(NO\u2082\u207B)', 8);
   o += A('M214 224 L178 224', '#e0201b', 1.8, 'mR');
-  o += T(148, 222, 'Nitrates', 9) + T(148, 232, '(NO\u2083\u207B)', 8);
-  o += A('M262 129 L326 132', '#e0201b', 1.8, 'mR') + T(294, 125, 'Runoff', 7.5, '#2c7a3a');
-  o += A('M244 140 Q290 140 334 150', '#e0201b', 1.8, 'mR') + T(296, 146, 'Leaching', 7.5, '#2c7a3a');
+  o += T(148, 222, tx('Nitrates', 'Nitratos'), 9) + T(148, 232, '(NO\u2083\u207B)', 8);
+  o += A('M262 129 L326 132', '#e0201b', 1.8, 'mR') + T(294, 125, tx('Runoff', 'Escorrent\u00EDa'), 7.5, '#2c7a3a');
+  o += A('M244 140 Q290 140 334 150', '#e0201b', 1.8, 'mR') + T(296, 146, tx('Leaching', 'Lixiviaci\u00F3n'), 7.5, '#2c7a3a');
   o += A('M262 230 Q320 232 346 178', '#e0201b', 1.6, 'mR') + A('M150 238 Q250 262 352 182', '#e0201b', 1.6, 'mR');
-  o += T(318, 222, 'Leaching', 7.5, '#2c7a3a');
-  o += T(370, 162, 'Eutrophication', 7.5, '#111');
-  o += T(98, 96, 'Gaseous', 8.5) + T(98, 106, 'Losses', 8.5) + T(98, 116, 'N\u2082 &amp; N\u2082O', 8.5);
+  o += T(318, 222, tx('Leaching', 'Lixiviaci\u00F3n'), 7.5, '#2c7a3a');
+  o += T(370, 162, tx('Eutrophication', 'Eutrofizaci\u00F3n'), 7.5, '#111');
+  o += T(98, 96, tx('Gaseous', 'P\u00E9rdidas'), 8.5) + T(98, 106, tx('Losses', 'gaseosas'), 8.5) + T(98, 116, tx('N\u2082 &amp; N\u2082O', 'N\u2082 y N\u2082O'), 8.5);
   o += A('M126 218 Q78 205 96 124', '#e0201b', 1.8, 'mR');
   o += A('M140 212 Q112 172 134 130', '#e0201b', 1.8, 'mR');
   o += A('M262 38 L192 72', '#e0201b', 1.8, 'mR');
@@ -334,12 +342,12 @@ function scenePhos() {
   o += '<ellipse cx="364" cy="160" rx="15" ry="22" fill="#a5713f"/>' + C(352, 130, 9, '#a5713f');
   o += '<ellipse cx="350" cy="112" rx="3" ry="11" fill="#a5713f"/><ellipse cx="357" cy="113" rx="3" ry="11" fill="#a5713f"/>' + C(348, 128, 1.4, '#222');
   o += '<ellipse cx="372" cy="182" rx="10" ry="4" fill="#94612f"/>';
-  o += pbox(176, 150, 64, 24, '#fff', ['Phosphates', 'in rock'], 7.5);
-  o += pbox(262, 96, 76, 34, '#fff', ['Phosphates', 'in organic', 'compounds'], 7.5);
-  o += pbox(190, 234, 70, 36, '#fff', ['Phosphates', 'in soil', '(inorganic)'], 7.5);
-  o += pbox(70, 240, 70, 24, '#fff', ['Phosphates', 'in solution'], 7.5);
-  o += pbox(64, 298, 92, 26, '#fff', ['Precipitated', '(solid) phosphates'], 7.5);
-  o += T(300, 200, 'Plants', 8) + T(344, 198, 'Animals', 8) + T(252, 346, 'Decomposition', 8);
+  o += pbox(176, 150, 64, 24, '#fff', (LANG === 'es' ? ['Fosfatos', 'en rocas'] : ['Phosphates', 'in rock']), 7.5);
+  o += pbox(262, 96, 76, 34, '#fff', (LANG === 'es' ? ['Fosfatos en', 'compuestos', 'org\u00E1nicos'] : ['Phosphates', 'in organic', 'compounds']), 7.5);
+  o += pbox(190, 234, 70, 36, '#fff', (LANG === 'es' ? ['Fosfatos', 'en el suelo', '(inorg\u00E1nicos)'] : ['Phosphates', 'in soil', '(inorganic)']), 7.5);
+  o += pbox(70, 240, 70, 24, '#fff', (LANG === 'es' ? ['Fosfatos', 'en soluci\u00F3n'] : ['Phosphates', 'in solution']), 7.5);
+  o += pbox(64, 298, 92, 26, '#fff', (LANG === 'es' ? ['Fosfatos precipitados', '(s\u00F3lidos)'] : ['Precipitated', '(solid) phosphates']), 7.5);
+  o += T(300, 200, tx('Plants', 'Plantas'), 8) + T(344, 198, tx('Animals', 'Animales'), 8) + T(252, 346, tx('Decomposition', 'Descomposici\u00F3n'), 8);
   var Y = '#e8a800';
   o += A('M26 350 L26 60 L150 60 Q170 60 170 84', Y, 4, 'mY');
   o += A('M180 140 L196 148', Y, 3, 'mY');
@@ -565,11 +573,226 @@ var CY = [
 var KEY = 'bgc_cycles_v1';
 var S = null;
 try { S = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { S = null; }
-if (!S || !S.c) S = { name: '', per: '', c: {}, doneAt: 0 };
+if (!S || !S.c) S = { name: '', per: '', c: {}, doneAt: 0, lang: 'en' };
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 function cs(id) {
   if (!S.c[id]) S.c[id] = { learn: false, lab: false, labOk: -1, labN: 0, quiz: false, qFirst: 0, qTot: 0 };
   return S.c[id];
+}
+
+/* ---------- LANGUAGE (English / Spanish) ---------- */
+var UI = {
+  en: {
+    logo: 'THE <span>BIOGEOCHEMICAL</span> CYCLES', docTitle: 'The Biogeochemical Cycles',
+    heroT: 'THE BIOGEOCHEMICAL CYCLES', heroS: 'Water &bull; Carbon &bull; Nitrogen &bull; Phosphorus',
+    heroP: 'Learn how each element moves through Earth, label the cycle like your worksheet, then prove it on the quiz.',
+    nameL: 'First and last name', namePh: 'Your name', perL: 'Class period', perC: 'Choose your period', perN: 'Period ', start: 'Start',
+    errName: 'Please type your first AND last name.', errPer: 'Please choose your class period.',
+    hubT: 'Pick a cycle (any order)', hubH: 'Each cycle: <b>1. Learn</b> &rarr; <b>2. Label</b> &rarr; <b>3. Quiz</b>. Finish all four to unlock your report for Canvas.',
+    rep: '&#x1F4C4; Get My Report', repLock: '&#x1F512; Report unlocks after all 4 quizzes',
+    sw: 'Not you? Change student', sw2: 'Tap again to ERASE progress and change student',
+    backC: '&larr; Cycles', zoom: '&#x1F50D; Zoom', fit: '&#x1F50D; Fit', myRep: 'My Report',
+    shot: '&#x1F4F8; Take a SCREENSHOT of this page and submit it on Canvas.', pdf: '&#x2B07;&#xFE0F; Download PDF copy',
+    learn: 'Learn', label: 'Label', quiz: 'Quiz', tLearn: '1. Learn', tLabel: '2. Label', tQuiz: '3. Quiz',
+    needLearn: 'Finish Learn first!', needLabel: 'Finish Label first!',
+    learnN: 'LEARN &bull; {a} of {b}', box: 'Worksheet box #', bonus: 'Bonus term', back: '&larr; Back', next: 'Next &rarr;',
+    goLabel: 'Done! Go Label &rarr;', learnDone: 'Learn complete! Now label the diagram.', enTerm: '',
+    labelT: 'LABEL THE ', labelH: 'Tap a word, then tap its box on the diagram. Tap a filled box to clear it.',
+    twice: '<b>One word is used twice.</b>', zoomTip: 'Use the <b>Zoom</b> button if the boxes are small.',
+    goQuiz: 'Go to the Quiz &rarr;', clear: 'Clear', check: 'Check My Labels',
+    allOk: '&#x1F389; <b>All {a} correct!</b> Copy these onto your paper worksheet now.',
+    someOk: '<b>{a} of {b} correct.</b> Fix the <span style="color:#ff6b8b">red</span> boxes and check again. Tip: look at where the arrows point.',
+    perfect: 'Perfect labels!', already: 'That one is already correct!', tapWord: 'Tap a word first', fillAll: 'Fill every box first ({a}/{b})',
+    qDone: 'QUIZ COMPLETE', firstTry: 'correct on the first try', practice: '(Practice round. Your report keeps your first score: {a}/{b})',
+    allDoneBtn: '&#x1F4C4; All cycles done! Get my report', backHub: 'Back to the Cycles &rarr;', again: 'Practice again',
+    qHead: 'QUIZ &bull; {a} of {b} mastered &bull; first-try correct: {c}', retry: 'Try this one again',
+    correct: 'Correct!', notQuite: 'Not quite. This question will come back.',
+    rTitle: 'THE BIOGEOCHEMICAL CYCLES', rSub: 'Review Completion Report', rName: 'Name:', rPer: 'Period:', rComp: 'Completed:',
+    rTime: 'Report time:', rLang: 'Language:', langName: 'English',
+    thCycle: 'Cycle', thLearn: 'Learn', thLabel: 'Label<br>1st check', thQuiz: 'Quiz<br>1st try',
+    total: 'Total quiz score (first try):', rFoot: 'All four cycles completed: Learn, Label (all correct) and Quiz (all mastered).',
+    pSub: 'Review Completion Report - Water, Carbon, Nitrogen, Phosphorus', pLabel: 'Label (1st check)', pQuiz: 'Quiz (1st try)', pDone: 'Done',
+    pFoot: 'All four cycles completed: Learn, Label (all correct) and Quiz (all questions mastered).', pSubmit: 'Submit this report on Canvas.',
+    pdfErr: 'Could not make the PDF. Take a screenshot instead!',
+    months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], am: 'AM', pm: 'PM'
+  },
+  es: {
+    logo: 'LOS CICLOS <span>BIOGEOQU\u00CDMICOS</span>', docTitle: 'Los ciclos biogeoqu\u00EDmicos',
+    heroT: 'LOS CICLOS BIOGEOQU\u00CDMICOS', heroS: 'Agua &bull; Carbono &bull; Nitr\u00F3geno &bull; F\u00F3sforo',
+    heroP: 'Aprende c\u00F3mo se mueve cada elemento por la Tierra, rotula el ciclo como en tu hoja de trabajo y luego demu\u00E9stralo en la prueba.',
+    nameL: 'Nombre y apellido', namePh: 'Tu nombre', perL: 'Per\u00EDodo de clase', perC: 'Elige tu per\u00EDodo', perN: 'Per\u00EDodo ', start: 'Comenzar',
+    errName: 'Escribe tu nombre Y tu apellido.', errPer: 'Elige tu per\u00EDodo de clase.',
+    hubT: 'Elige un ciclo (en cualquier orden)', hubH: 'Cada ciclo: <b>1. Aprender</b> &rarr; <b>2. Rotular</b> &rarr; <b>3. Prueba</b>. Termina los cuatro para desbloquear tu informe para Canvas.',
+    rep: '&#x1F4C4; Ver mi informe', repLock: '&#x1F512; El informe se desbloquea al terminar las 4 pruebas',
+    sw: '\u00BFNo eres t\u00FA? Cambiar de estudiante', sw2: 'Toca otra vez para BORRAR el progreso y cambiar de estudiante',
+    backC: '&larr; Ciclos', zoom: '&#x1F50D; Ampliar', fit: '&#x1F50D; Ajustar', myRep: 'Mi informe',
+    shot: '&#x1F4F8; Toma una CAPTURA DE PANTALLA de esta p\u00E1gina y entr\u00E9gala en Canvas.', pdf: '&#x2B07;&#xFE0F; Descargar copia en PDF',
+    learn: 'Aprender', label: 'Rotular', quiz: 'Prueba', tLearn: '1. Aprender', tLabel: '2. Rotular', tQuiz: '3. Prueba',
+    needLearn: '\u00A1Primero termina Aprender!', needLabel: '\u00A1Primero termina Rotular!',
+    learnN: 'APRENDER &bull; {a} de {b}', box: 'Casilla de la hoja #', bonus: 'T\u00E9rmino extra', back: '&larr; Atr\u00E1s', next: 'Siguiente &rarr;',
+    goLabel: '\u00A1Listo! A rotular &rarr;', learnDone: '\u00A1Terminaste Aprender! Ahora rotula el diagrama.', enTerm: 'En ingl\u00E9s: ',
+    labelT: 'ROTULA EL ', labelH: 'Toca una palabra y luego toca su casilla en el diagrama. Toca una casilla llena para borrarla.',
+    twice: '<b>Una palabra se usa dos veces.</b>', zoomTip: 'Usa el bot\u00F3n <b>Ampliar</b> si las casillas son peque\u00F1as.',
+    goQuiz: 'Ir a la prueba &rarr;', clear: 'Borrar', check: 'Revisar mis r\u00F3tulos',
+    allOk: '&#x1F389; <b>\u00A1Las {a} est\u00E1n correctas!</b> C\u00F3pialas ahora en tu hoja de trabajo de papel.',
+    someOk: '<b>{a} de {b} correctas.</b> Corrige las casillas <span style="color:#ff6b8b">rojas</span> y revisa otra vez. Consejo: f\u00EDjate hacia d\u00F3nde apuntan las flechas.',
+    perfect: '\u00A1R\u00F3tulos perfectos!', already: '\u00A1Esa ya est\u00E1 correcta!', tapWord: 'Primero toca una palabra', fillAll: 'Primero llena todas las casillas ({a}/{b})',
+    qDone: 'PRUEBA COMPLETADA', firstTry: 'correctas al primer intento', practice: '(Ronda de pr\u00E1ctica. Tu informe guarda tu primera calificaci\u00F3n: {a}/{b})',
+    allDoneBtn: '&#x1F4C4; \u00A1Terminaste todos los ciclos! Ver mi informe', backHub: 'Volver a los ciclos &rarr;', again: 'Practicar otra vez',
+    qHead: 'PRUEBA &bull; {a} de {b} dominadas &bull; correctas al primer intento: {c}', retry: 'Intenta esta otra vez',
+    correct: '\u00A1Correcto!', notQuite: 'Casi. Esta pregunta volver\u00E1 a salir.',
+    rTitle: 'LOS CICLOS BIOGEOQU\u00CDMICOS', rSub: 'Informe de repaso completado', rName: 'Nombre:', rPer: 'Per\u00EDodo:', rComp: 'Completado:',
+    rTime: 'Hora del informe:', rLang: 'Idioma:', langName: 'Espa\u00F1ol (Spanish)',
+    thCycle: 'Ciclo', thLearn: 'Aprender', thLabel: 'Rotular<br>1.er intento', thQuiz: 'Prueba<br>1.er intento',
+    total: 'Total de las pruebas (primer intento):', rFoot: 'Los cuatro ciclos completados: Aprender, Rotular (todo correcto) y Prueba (todo dominado).',
+    pSub: 'Informe de repaso completado - Agua, Carbono, Nitr\u00F3geno, F\u00F3sforo', pLabel: 'Rotular (1.er int.)', pQuiz: 'Prueba (1.er int.)', pDone: 'Hecho',
+    pFoot: 'Los 4 ciclos completados: Aprender, Rotular (todo correcto) y Prueba (todo dominado).', pSubmit: 'Entrega este informe en Canvas.',
+    pdfErr: 'No se pudo crear el PDF. \u00A1Toma una captura de pantalla!',
+    months: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'], am: 'a. m.', pm: 'p. m.'
+  }
+};
+var LANG = (S.lang === 'es') ? 'es' : 'en';
+function L(k) { var v = UI[LANG][k]; return v === undefined ? UI.en[k] : v; }
+function Lf(k, a, b, c) { return L(k).replace('{a}', a).replace('{b}', b).replace('{c}', c); }
+function ul(items) { return '<ul><li>' + items.join('</li><li>') + '</li></ul>'; }
+
+/* Spanish content. Steps: [title, text, tip]. Quiz: [question, answers (first is correct), explanation]. */
+var ES = {
+water: {
+  name: 'Ciclo del agua', sub: 'Ciclo hidrol\u00F3gico',
+  slots: ['Condensaci\u00F3n', 'Transpiraci\u00F3n', 'Precipitaci\u00F3n', 'Escorrent\u00EDa', 'Condensaci\u00F3n', 'Evaporaci\u00F3n', 'Acumulaci\u00F3n'],
+  bank: ['Condensaci\u00F3n', 'Precipitaci\u00F3n', 'Transpiraci\u00F3n', 'Evaporaci\u00F3n', 'Escorrent\u00EDa', 'Acumulaci\u00F3n'],
+  steps: [
+    ['El ciclo del agua', "El agua se mueve sin parar entre <b>el oc\u00E9ano, el aire, la tierra y los seres vivos</b>. La <b>energ\u00EDa del sol</b> eleva el agua y la <b>gravedad</b> la hace bajar de nuevo.", "El agua que bebes hoy es la misma que beb\u00EDan los dinosaurios. \u00A1La Tierra la recicla una y otra vez!"],
+    ['Evaporaci\u00F3n', "El sol calienta el agua de los oc\u00E9anos, lagos y r\u00EDos. El agua l\u00EDquida se convierte en un gas invisible llamado <b>vapor de agua</b>, que sube al aire.", "La mayor parte de la evaporaci\u00F3n viene de los oc\u00E9anos. Cuando el agua salada se evapora, la sal se queda atr\u00E1s."],
+    ['Transpiraci\u00F3n', "Las plantas absorben agua por sus ra\u00EDces y liberan <b>vapor de agua</b> a trav\u00E9s de peque\u00F1os poros en sus hojas llamados <b>estomas</b>.", "La evaporaci\u00F3n + la transpiraci\u00F3n juntas se llaman <b>evapotranspiraci\u00F3n</b>."],
+    ['Sublimaci\u00F3n', "El hielo o la nieve se convierte <b>directamente en vapor de agua</b> sin derretirse primero. Ocurre en cimas de monta\u00F1as y glaciares fr\u00EDos, soleados y con viento.", "No est\u00E1 en la hoja de trabajo, pero es un camino real del ciclo del agua."],
+    ['Condensaci\u00F3n', "Al subir, el vapor de agua se <b>enfr\u00EDa</b>. El vapor fr\u00EDo vuelve a convertirse en peque\u00F1as <b>gotitas de l\u00EDquido</b> alrededor de part\u00EDculas de polvo. Miles de millones de gotitas = una <b>nube</b>.", "Consejo para la hoja: Condensaci\u00F3n es la palabra que usas <b>dos veces</b> (casillas 1 y 5). El roc\u00EDo en el c\u00E9sped y la niebla tambi\u00E9n son condensaci\u00F3n."],
+    ['Precipitaci\u00F3n', "Las gotitas de las nubes chocan y crecen. Cuando pesan demasiado, caen como <b>lluvia, nieve, aguanieve o granizo</b>.", "Las tormentas de las tardes de verano en Florida son el ciclo del agua a toda velocidad."],
+    ['Escorrent\u00EDa', "Es el agua que <b>fluye sobre el suelo</b> cuesta abajo hacia arroyos, r\u00EDos, lagos y el oc\u00E9ano.", "Los estacionamientos y las calles causan m\u00E1s escorrent\u00EDa. La escorrent\u00EDa puede llevar basura, aceite y fertilizante a nuestras aguas."],
+    ['Infiltraci\u00F3n', "El agua <b>entra en el suelo</b> por la superficie en vez de escurrirse.", "El suelo arenoso de Florida deja que el agua se infiltre r\u00E1pido."],
+    ['Percolaci\u00F3n', "El agua sigue bajando <b>m\u00E1s profundo</b> a trav\u00E9s de capas de suelo y roca hasta llegar al <b>nivel fre\u00E1tico</b>.", "Infiltraci\u00F3n = entrar en el suelo por la superficie. Percolaci\u00F3n = bajar m\u00E1s profundo."],
+    ['Agua subterr\u00E1nea y acu\u00EDferos', "El <b>agua subterr\u00E1nea</b> es agua guardada bajo tierra en los espacios entre la arena y las rocas. Un <b>acu\u00EDfero</b> es una capa de roca o arena que almacena agua subterr\u00E1nea y la deja fluir.", "La mayor\u00EDa de los floridanos beben agua bombeada de acu\u00EDferos como el <b>Acu\u00EDfero de Florida (Floridan Aquifer)</b>."],
+    ['Acumulaci\u00F3n (recolecci\u00F3n)', "El agua <b>se junta y se almacena</b> en oc\u00E9anos, lagos, r\u00EDos, casquetes de hielo y bajo tierra. \u00A1Luego puede evaporarse otra vez!", "Cerca del 97% del agua de la Tierra es agua salada del oc\u00E9ano."],
+    ['Por qu\u00E9 es importante', ul(["Nos da el <b>agua dulce</b> que bebes, adem\u00E1s del agua para las granjas y todos los seres vivos.", "Mueve el <b>calor</b> alrededor de la Tierra y produce el <b>tiempo atmosf\u00E9rico</b>, desde las tormentas de la tarde hasta los huracanes.", "La evaporaci\u00F3n <b>limpia el agua</b> de forma natural porque la sal y la contaminaci\u00F3n se quedan atr\u00E1s.", "Pavimentar la tierra y contaminar la escorrent\u00EDa puede da\u00F1ar nuestros <b>acu\u00EDferos</b>, nuestra agua potable."])]
+  ],
+  quiz: [
+    ['\u00BFQu\u00E9 proceso usa la energ\u00EDa del sol para convertir el agua l\u00EDquida en vapor de agua?', ['Evaporaci\u00F3n', 'Condensaci\u00F3n', 'Precipitaci\u00F3n', 'Escorrent\u00EDa'], 'Evaporaci\u00F3n = de l\u00EDquido a gas, gracias al sol.'],
+    ['El vapor de agua que sale de las hojas de las plantas se llama:', ['Transpiraci\u00F3n', 'Infiltraci\u00F3n', 'Sublimaci\u00F3n', 'Percolaci\u00F3n'], 'Las plantas liberan vapor de agua por los estomas de sus hojas: transpiraci\u00F3n.'],
+    ['Las nubes se forman por:', ['Condensaci\u00F3n', 'Evaporaci\u00F3n', 'Escorrent\u00EDa', 'Transpiraci\u00F3n'], 'El vapor que sube se enfr\u00EDa y se condensa en gotitas que forman las nubes.'],
+    ['\u00BFCu\u00E1l es la diferencia entre infiltraci\u00F3n y percolaci\u00F3n?', ['La infiltraci\u00F3n es el agua que entra por la superficie del suelo; la percolaci\u00F3n es el agua que baja m\u00E1s profundo hasta el agua subterr\u00E1nea', 'La infiltraci\u00F3n ocurre en las nubes; la percolaci\u00F3n ocurre en los oc\u00E9anos', 'Son dos nombres para la evaporaci\u00F3n', 'La percolaci\u00F3n es el agua que fluye sobre el suelo'], 'Infiltraci\u00F3n = entrar por la superficie. Percolaci\u00F3n = bajar m\u00E1s profundo.'],
+    ['Un acu\u00EDfero es:', ['Una capa subterr\u00E1nea de roca o arena que almacena agua subterr\u00E1nea', 'Un tipo de nube de tormenta', 'La desembocadura de un r\u00EDo', 'Un poro de una hoja'], 'Los acu\u00EDferos almacenan agua subterr\u00E1nea. El Acu\u00EDfero de Florida da gran parte del agua potable de Florida.'],
+    ['La lluvia que corre por un estacionamiento hasta una alcantarilla es un ejemplo de:', ['Escorrent\u00EDa', 'Infiltraci\u00F3n', 'Condensaci\u00F3n', 'Transpiraci\u00F3n'], 'El agua que fluye sobre la superficie es escorrent\u00EDa.'],
+    ['La nieve de una monta\u00F1a que se convierte directamente en vapor de agua es:', ['Sublimaci\u00F3n', 'Condensaci\u00F3n', 'Precipitaci\u00F3n', 'Acumulaci\u00F3n'], 'La sublimaci\u00F3n se salta la etapa l\u00EDquida: de s\u00F3lido a gas.'],
+    ['\u00BFQu\u00E9 impulsa (da energ\u00EDa a) el ciclo del agua?', ['La energ\u00EDa del sol, m\u00E1s la gravedad', 'El campo magn\u00E9tico de la Tierra', 'Solo la luna', 'Solo el viento'], 'El sol evapora el agua; la gravedad la trae de vuelta como precipitaci\u00F3n y escorrent\u00EDa.']
+  ]
+},
+carbon: {
+  name: 'Ciclo del carbono', sub: 'C', wide: { 8: 64 },
+  slots: ['combusti\u00F3n', 'fotos\u00EDntesis', 'respiraci\u00F3n', 'escorrent\u00EDa', 'difusi\u00F3n', 'carbonificaci\u00F3n', 'organismos muertos y desechos animales', 'descomposici\u00F3n', 'sedimentaci\u00F3n'],
+  bank: ['carbonificaci\u00F3n', 'combusti\u00F3n', 'descomposici\u00F3n', 'difusi\u00F3n', 'escorrent\u00EDa', 'fotos\u00EDntesis', 'organismos muertos y desechos animales', 'respiraci\u00F3n', 'sedimentaci\u00F3n'],
+  steps: [
+    ['El ciclo del carbono', "El carbono es el <b>bloque de construcci\u00F3n de la vida</b>. Est\u00E1 en cada az\u00FAcar, grasa, prote\u00EDna y mol\u00E9cula de ADN de tu cuerpo. El carbono se mueve entre <b>el aire, los seres vivos, el suelo, el oc\u00E9ano y las rocas</b>.", "El carbono de tu cuerpo alguna vez fue CO\u2082 en el aire, capturado por una planta."],
+    ['Carbono atmosf\u00E9rico', "El carbono del aire es principalmente <b>di\u00F3xido de carbono (CO\u2082)</b>. Es una parte muy peque\u00F1a del aire (cerca del 0.04%), pero es un <b>gas de efecto invernadero</b> que atrapa el calor.", "Los cient\u00EDficos miden el CO\u2082 todos los d\u00EDas, y ha ido aumentando desde el siglo XIX (los a\u00F1os 1800)."],
+    ['Fotos\u00EDntesis', "Las plantas y las algas usan la <b>luz del sol</b> para sacar CO\u2082 del aire y combinarlo con agua para producir <b>az\u00FAcar (glucosa)</b>, liberando <b>ox\u00EDgeno</b>.<span class=\"eq\">6CO\u2082 + 6H\u2082O + luz \u2192 C\u2086H\u2081\u2082O\u2086 + 6O\u2082</span>", "La fotos\u00EDntesis es la forma principal en que el carbono SALE de la atm\u00F3sfera."],
+    ['Respiraci\u00F3n', "Los seres vivos (<b>plantas Y animales</b>) descomponen el az\u00FAcar para obtener energ\u00EDa y <b>liberan CO\u2082</b> de vuelta al aire.<span class=\"eq\">C\u2086H\u2081\u2082O\u2086 + 6O\u2082 \u2192 6CO\u2082 + 6H\u2082O + energ\u00EDa</span>", "La respiraci\u00F3n es lo contrario de la fotos\u00EDntesis. Cada vez que exhalas, sueltas CO\u2082."],
+    ['Organismos muertos y desechos animales', "Cuando las plantas y los animales <b>mueren</b> o producen <b>desechos</b>, el carbono guardado en sus cuerpos termina en el <b>suelo</b>.", "Las hojas ca\u00EDdas, los animales muertos y el esti\u00E9rcol son carbono en camino al suelo."],
+    ['Descomposici\u00F3n', "Los <b>descomponedores</b>, como las bacterias y los hongos, descomponen (pudren) la materia muerta y los desechos. Ellos respiran y <b>liberan CO\u2082</b> de vuelta al aire.", "Pudrirse = descomponerse. Una pila de compost est\u00E1 tibia porque los descomponedores est\u00E1n ocupados respirando."],
+    ['Escorrent\u00EDa', "La lluvia arrastra <b>carbono disuelto</b> y pedacitos de materia org\u00E1nica del suelo hacia los r\u00EDos y luego al <b>oc\u00E9ano</b>.", "Los r\u00EDos llevan carbono de la tierra al mar todos los d\u00EDas."],
+    ['Difusi\u00F3n (absorci\u00F3n del oc\u00E9ano)', "El CO\u2082 se mueve de un lado a otro entre <b>el aire y la superficie del oc\u00E9ano</b>. El oc\u00E9ano <b>absorbe</b> CO\u2082 y guarda enormes cantidades como <b>bicarbonato (HCO\u2083\u207B)</b>.", "El oc\u00E9ano absorbe aproximadamente una cuarta parte del CO\u2082 que las personas liberan cada a\u00F1o."],
+    ['Acidificaci\u00F3n del oc\u00E9ano', "Cuando el oc\u00E9ano absorbe CO\u2082, este reacciona con el agua y forma <b>\u00E1cido carb\u00F3nico</b>.<span class=\"eq\">CO\u2082 + H\u2082O \u2192 H\u2082CO\u2083 (\u00E1cido carb\u00F3nico)</span>M\u00E1s CO\u2082 hace que el agua de mar sea m\u00E1s <b>\u00E1cida</b>. El pH del oc\u00E9ano ha bajado de aproximadamente <b>8.2 a 8.1</b> desde el siglo XIX (cerca de un 30% m\u00E1s \u00E1cido).", "El \u00E1cido hace m\u00E1s dif\u00EDcil que los <b>corales, almejas, ostras y el plancton</b> formen sus conchas, un gran problema para los arrecifes de coral de Florida."],
+    ['Sedimentaci\u00F3n', "Las conchas y los esqueletos de los animales marinos <b>se hunden y se acumulan</b> en el fondo del mar. Con much\u00EDsimo tiempo se comprimen y forman una roca llamada <b>caliza</b>.", "\u00A1Gran parte de Florida est\u00E1 sobre roca caliza formada por conchas marinas antiguas!"],
+    ['Carbonificaci\u00F3n (combustibles f\u00F3siles)', "Los organismos muertos enterrados muy profundo son comprimidos por el <b>calor y la presi\u00F3n</b> durante <b>millones de a\u00F1os</b> y poco a poco se convierten en <b>carb\u00F3n, petr\u00F3leo y gas natural</b>.", "Tu hoja de trabajo lo llama <b>carbonificaci\u00F3n</b>. Los cient\u00EDficos tambi\u00E9n dicen carbonizaci\u00F3n o formaci\u00F3n de combustibles f\u00F3siles."],
+    ['Combusti\u00F3n', "<b>Quemar</b> combustibles f\u00F3siles (autos, plantas el\u00E9ctricas, f\u00E1bricas) y madera libera muy r\u00E1pido, como <b>CO\u2082</b>, el carbono que estuvo guardado durante millones de a\u00F1os.", "La deforestaci\u00F3n tambi\u00E9n a\u00F1ade CO\u2082: quemar \u00E1rboles libera carbono Y elimina \u00E1rboles que lo absorber\u00EDan."],
+    ['Por qu\u00E9 es importante', ul(["M\u00E1s CO\u2082 atrapa m\u00E1s calor, lo que causa el <b>cambio clim\u00E1tico</b>: veranos m\u00E1s calurosos, tormentas m\u00E1s fuertes y <b>aumento del nivel del mar</b> en la costa de Florida.", "La <b>acidificaci\u00F3n del oc\u00E9ano</b> amenaza los arrecifes de coral, los mariscos y la pesca.", "Toda tu <b>comida</b> es carbono que las plantas capturaron con la fotos\u00EDntesis.", "Plantar \u00E1rboles y usar menos combustibles f\u00F3siles mantiene m\u00E1s carbono fuera del aire."])]
+  ],
+  quiz: [
+    ['\u00BFQu\u00E9 proceso quita CO\u2082 de la atm\u00F3sfera?', ['Fotos\u00EDntesis', 'Respiraci\u00F3n', 'Combusti\u00F3n', 'Descomposici\u00F3n'], 'Las plantas toman CO\u2082 para producir az\u00FAcar durante la fotos\u00EDntesis.'],
+    ['Quemar combustibles f\u00F3siles como la gasolina y el carb\u00F3n se llama:', ['Combusti\u00F3n', 'Sedimentaci\u00F3n', 'Difusi\u00F3n', 'Fotos\u00EDntesis'], 'Combusti\u00F3n = quemar, lo que libera el carbono guardado como CO\u2082.'],
+    ['\u00BFQu\u00E9 organismos realizan la respiraci\u00F3n celular?', ['Tanto las plantas como los animales', 'Solo los animales', 'Solo las plantas', 'Solo las bacterias'], 'Las plantas producen az\u00FAcar Y tambi\u00E9n la descomponen para obtener energ\u00EDa, as\u00ED que tambi\u00E9n respiran.'],
+    ['La acidificaci\u00F3n del oc\u00E9ano ocurre porque:', ['El oc\u00E9ano absorbe CO\u2082, que forma \u00E1cido carb\u00F3nico', 'Los r\u00EDos llevan sal al oc\u00E9ano', 'Solo por derrames de petr\u00F3leo', 'El agua del oc\u00E9ano se evapora'], 'CO\u2082 + H\u2082O forma \u00E1cido carb\u00F3nico, que baja el pH del oc\u00E9ano.'],
+    ['Las bacterias y los hongos devuelven al aire el carbono de la materia muerta mediante:', ['La descomposici\u00F3n', 'La fotos\u00EDntesis', 'La sedimentaci\u00F3n', 'La escorrent\u00EDa'], 'Los descomponedores degradan la materia muerta y liberan CO\u2082.'],
+    ['Cuando las conchas se acumulan en el fondo del mar y se convierten en roca caliza, se llama:', ['Sedimentaci\u00F3n', 'Combusti\u00F3n', 'Respiraci\u00F3n', 'Transpiraci\u00F3n'], 'La sedimentaci\u00F3n guarda carbono en las rocas por much\u00EDsimo tiempo.'],
+    ['Los combustibles f\u00F3siles se forman a partir de:', ['Organismos muertos enterrados bajo calor y presi\u00F3n durante millones de a\u00F1os', 'Lava de los volcanes', 'Agua evaporada del oc\u00E9ano', 'Rayos'], 'El carb\u00F3n, el petr\u00F3leo y el gas natural son restos de seres vivos antiguos.'],
+    ['\u00BFPor qu\u00E9 la acidificaci\u00F3n del oc\u00E9ano es un problema para los arrecifes de coral?', ['Hace m\u00E1s dif\u00EDcil que los corales formen sus esqueletos y conchas', 'Hace que el agua est\u00E9 demasiado fr\u00EDa', 'A\u00F1ade demasiado ox\u00EDgeno', 'Bloquea toda la luz del sol'], 'El agua m\u00E1s \u00E1cida hace m\u00E1s dif\u00EDcil formar conchas y esqueletos de carbonato de calcio.']
+  ]
+},
+nitrogen: {
+  name: 'Ciclo del nitr\u00F3geno', sub: 'N',
+  slots: ['fijaci\u00F3n por rayos', 'fijaci\u00F3n bacteriana', 'fertilizantes', 'desnitrificaci\u00F3n', 'consumo por plantas', 'nitrificaci\u00F3n', 'nitrificaci\u00F3n'],
+  bank: ['fijaci\u00F3n bacteriana', 'desnitrificaci\u00F3n', 'fertilizantes', 'fijaci\u00F3n por rayos', 'consumo por plantas', 'nitrificaci\u00F3n'],
+  steps: [
+    ['El ciclo del nitr\u00F3geno', "El gas nitr\u00F3geno (<b>N\u2082</b>) forma cerca del <b>78% del aire</b>, \u00A1pero la mayor\u00EDa de los seres vivos <b>no lo pueden usar</b>! Sus dos \u00E1tomos est\u00E1n unidos por un <b>enlace triple</b> superfuerte.", "El ciclo del nitr\u00F3geno convierte el N\u2082 en formas que los seres vivos pueden usar, y luego otra vez en N\u2082."],
+    ['Por qu\u00E9 la vida necesita nitr\u00F3geno', "El nitr\u00F3geno forma parte de los <b>amino\u00E1cidos (prote\u00EDnas)</b>, el <b>ADN y el ARN</b>, y la <b>clorofila</b>. Sin nitr\u00F3geno = sin m\u00FAsculos, sin enzimas, sin genes y sin plantas verdes.", "Las hojas amarillas en una planta a menudo son se\u00F1al de que no recibe suficiente nitr\u00F3geno."],
+    ['Fijaci\u00F3n por rayos', "La enorme energ\u00EDa de los rayos <b>rompe el enlace triple del N\u2082</b>. El nitr\u00F3geno se une con el ox\u00EDgeno y forma <b>\u00F3xidos de nitr\u00F3geno</b>, que se disuelven en la lluvia y caen al suelo como <b>nitratos</b>.", "Florida es la capital de los rayos de EE. UU., \u00A1as\u00ED que aqu\u00ED se fija mucho nitr\u00F3geno!"],
+    ['Fijaci\u00F3n bacteriana', "Las <b>bacterias fijadoras de nitr\u00F3geno</b> del suelo y de los <b>n\u00F3dulos de las ra\u00EDces</b> de las leguminosas (frijoles, cacahuates, tr\u00E9bol) convierten el N\u2082 en <b>amon\u00EDaco (NH\u2083)</b>, que se vuelve <b>amonio (NH\u2084\u207A)</b> en el suelo.", "Las bacterias hacen la mayor parte de la fijaci\u00F3n natural de nitr\u00F3geno en la Tierra, mucho m\u00E1s que los rayos."],
+    ['Fertilizantes', "Las f\u00E1bricas sacan N\u2082 del aire y producen <b>fertilizante de amon\u00EDaco</b>. Los agricultores lo a\u00F1aden al suelo para que los cultivos crezcan m\u00E1s.", "Esta fijaci\u00F3n hecha por los humanos (el proceso Haber-Bosch) ayuda a alimentar a miles de millones de personas."],
+    ['Amonificaci\u00F3n (mineralizaci\u00F3n)', "Los <b>desechos animales</b> y la <b>materia org\u00E1nica muerta (R-NH\u2082)</b> son descompuestos por los <b>descomponedores</b> en <b>amon\u00EDaco / amonio (NH\u2084\u207A)</b>.", "Tu diagrama llama a este paso <b>mineralizaci\u00F3n</b>. As\u00ED se recicla el nitr\u00F3geno del excremento y de los seres muertos."],
+    ['Nitrificaci\u00F3n', "Las <b>bacterias nitrificantes</b> cambian el nitr\u00F3geno en dos pasos:<span class=\"eq\">Amonio (NH\u2084\u207A) \u2192 Nitritos (NO\u2082\u207B) \u2192 Nitratos (NO\u2083\u207B)</span>", "\u00A1Dos pasos = dos casillas! Nitrificaci\u00F3n es la palabra que se usa <b>dos veces</b> en la hoja de trabajo (casillas 6 y 7)."],
+    ['Consumo por plantas (asimilaci\u00F3n)', "Las ra\u00EDces de las plantas <b>absorben nitratos</b> (y amonio) y usan el nitr\u00F3geno para formar prote\u00EDnas y ADN. <b>Los animales obtienen nitr\u00F3geno al comer plantas</b> (o al comer animales que comieron plantas).", "La vaca del diagrama obtiene su nitr\u00F3geno del pasto y las plantas que come."],
+    ['Desnitrificaci\u00F3n', "Las <b>bacterias desnitrificantes</b> de los suelos h\u00FAmedos y con poco ox\u00EDgeno convierten los nitratos otra vez en <b>gas N\u2082</b> (y un poco de N\u2082O), devolviendo el nitr\u00F3geno a la <b>atm\u00F3sfera</b>.", "Esto cierra el ciclo: el nitr\u00F3geno vuelve al aire donde empez\u00F3."],
+    ['Escorrent\u00EDa, lixiviaci\u00F3n y eutrofizaci\u00F3n', "El fertilizante sobrante es arrastrado al agua (<b>escorrent\u00EDa</b>) o baja a trav\u00E9s del suelo (<b>lixiviaci\u00F3n</b>). Demasiados nutrientes causan <b>proliferaci\u00F3n de algas</b>. Cuando las algas mueren, los descomponedores gastan el ox\u00EDgeno y los peces mueren. Esto es la <b>eutrofizaci\u00F3n</b>.", "La proliferaci\u00F3n de algas verdeazuladas en el lago Okeechobee de Florida est\u00E1 relacionada con la contaminaci\u00F3n por nutrientes."],
+    ['Emisiones de combustibles f\u00F3siles', "Quemar combustibles f\u00F3siles libera <b>\u00F3xidos de nitr\u00F3geno</b> al aire. Causan <b>smog</b> y <b>lluvia \u00E1cida</b> y a\u00F1aden nitr\u00F3geno extra al ciclo.", "El escape de los autos es una fuente importante de \u00F3xidos de nitr\u00F3geno."],
+    ['Por qu\u00E9 es importante', ul(["El nitr\u00F3geno controla cu\u00E1nta <b>comida</b> pueden producir las granjas.", "Demasiado nitr\u00F3geno <b>contamina</b> lagos, r\u00EDos y el oc\u00E9ano (proliferaci\u00F3n de algas, muerte de peces).", "\u00A1Las prote\u00EDnas y el ADN de <b>tu cuerpo</b> contienen nitr\u00F3geno que alguna vez estuvo en el aire, fijado por bacterias o rayos!"])]
+  ],
+  quiz: [
+    ['\u00BFAproximadamente qu\u00E9 porcentaje de la atm\u00F3sfera es gas nitr\u00F3geno (N\u2082)?', ['78%', '21%', '1%', '0.04%'], 'El N\u2082 es cerca del 78% del aire. El ox\u00EDgeno es cerca del 21%.'],
+    ['\u00BFPor qu\u00E9 la mayor\u00EDa de los seres vivos no pueden usar el N\u2082 directamente del aire?', ['Sus \u00E1tomos est\u00E1n unidos por un enlace triple muy fuerte', 'Es venenoso', 'Hay muy poco', 'Solo se encuentra en el oc\u00E9ano'], 'El enlace triple es muy dif\u00EDcil de romper sin bacterias o rayos.'],
+    ['\u00BFQu\u00E9 convierte el N\u2082 en amon\u00EDaco en los n\u00F3dulos de las ra\u00EDces de los frijoles y los cacahuates?', ['Bacterias fijadoras de nitr\u00F3geno', 'Bacterias desnitrificantes', 'Hongos', 'Rayos'], 'Las bacterias fijadoras de nitr\u00F3geno viven en los n\u00F3dulos de las ra\u00EDces de las leguminosas.'],
+    ['\u00BFC\u00F3mo mueven los rayos el nitr\u00F3geno en el ciclo?', ['Separan el N\u2082 para que el nitr\u00F3geno se una al ox\u00EDgeno y caiga con la lluvia como nitratos', 'Convierten el nitr\u00F3geno en CO\u2082', 'Evaporan el nitr\u00F3geno del oc\u00E9ano', 'Convierten el nitr\u00F3geno en combustibles f\u00F3siles'], 'La fijaci\u00F3n por rayos forma \u00F3xidos de nitr\u00F3geno que la lluvia lleva al suelo.'],
+    ['\u00BFQu\u00E9 orden muestra la nitrificaci\u00F3n?', ['Amonio \u2192 nitritos \u2192 nitratos', 'Nitratos \u2192 gas N\u2082', 'N\u2082 \u2192 amon\u00EDaco', 'Prote\u00EDnas \u2192 amon\u00EDaco'], 'Bacterias nitrificantes: NH\u2084\u207A \u2192 NO\u2082\u207B \u2192 NO\u2083\u207B.'],
+    ['La desnitrificaci\u00F3n devuelve el nitr\u00F3geno a:', ['La atm\u00F3sfera como gas N\u2082', 'Las ra\u00EDces de las plantas', 'Las rocas', 'El oc\u00E9ano como amon\u00EDaco'], 'Las bacterias desnitrificantes liberan N\u2082 de vuelta al aire.'],
+    ['\u00BFC\u00F3mo obtienen los animales el nitr\u00F3geno que necesitan?', ['Comiendo plantas u otros animales', 'Respirando N\u2082', 'A trav\u00E9s de la piel', 'Bebiendo agua'], 'Los animales obtienen nitr\u00F3geno de las prote\u00EDnas de su comida.'],
+    ['La escorrent\u00EDa de fertilizantes que causa proliferaci\u00F3n de algas y poco ox\u00EDgeno en el agua se llama:', ['Eutrofizaci\u00F3n', 'Nitrificaci\u00F3n', 'Fijaci\u00F3n', 'Respiraci\u00F3n'], 'Eutrofizaci\u00F3n = demasiados nutrientes en el agua, lo que causa proliferaci\u00F3n de algas y muerte de peces.']
+  ]
+},
+phos: {
+  name: 'Ciclo del f\u00F3sforo', sub: 'P',
+  slots: ['Levantamiento de rocas', 'meteorizaci\u00F3n de rocas', 'escorrent\u00EDa', 'Organismos muertos', 'roca', 'bacterias del suelo'],
+  bank: ['Organismos muertos', 'bacterias del suelo', 'roca', 'Levantamiento de rocas', 'meteorizaci\u00F3n de rocas', 'escorrent\u00EDa'],
+  steps: [
+    ['El ciclo del f\u00F3sforo', "El ciclo del f\u00F3sforo es el ciclo <b>m\u00E1s lento</b>. <b>No tiene etapa gaseosa</b>, as\u00ED que el f\u00F3sforo nunca entra a la atm\u00F3sfera. Se mueve entre <b>las rocas, el suelo, el agua y los seres vivos</b>.", "Una vuelta completa de este ciclo puede tardar millones de a\u00F1os."],
+    ['Meteorizaci\u00F3n de rocas', "La lluvia, el viento y el hielo <b>rompen las rocas</b> poco a poco, liberando <b>fosfato</b> al suelo y al agua.", "Fosfato = f\u00F3sforo unido con ox\u00EDgeno (PO\u2084\u00B3\u207B)."],
+    ['Escorrent\u00EDa', "El agua de lluvia <b>lleva el fosfato</b> de las rocas desgastadas y del suelo hacia arroyos, lagos y el oc\u00E9ano.", "La escorrent\u00EDa de fertilizantes a\u00F1ade fosfato extra al agua."],
+    ['Plantas y animales', "Las ra\u00EDces de las plantas <b>absorben fosfato</b> del suelo y del agua. <b>Los animales obtienen f\u00F3sforo al comer plantas</b> (u otros animales).", "El conejo del diagrama obtiene su f\u00F3sforo de las plantas que come."],
+    ['Organismos muertos', "Cuando las plantas y los animales <b>mueren</b> o dejan desechos, su f\u00F3sforo pasa a formar parte del <b>detrito</b> (materia org\u00E1nica muerta).", "Detrito = hojas muertas, animales muertos y desechos."],
+    ['Bacterias del suelo (descomposici\u00F3n)', "Las <b>bacterias</b> y otros descomponedores del suelo descomponen los organismos muertos y <b>devuelven el fosfato al suelo</b>, listo otra vez para las plantas.", "Este es el circuito r\u00E1pido del ciclo: suelo \u2192 plantas \u2192 animales \u2192 descomponedores \u2192 suelo."],
+    ['Roca (sedimento)', "En los lagos y oc\u00E9anos, el fosfato <b>se asienta en el fondo</b> como sedimento s\u00F3lido. Durante millones de a\u00F1os se convierte en <b>roca</b> nueva.", "Este es el circuito lento del ciclo."],
+    ['Levantamiento de rocas', "Los movimientos de las placas de la Tierra <b>empujan hacia arriba las rocas del fondo del mar</b> poco a poco, formando tierra nueva y monta\u00F1as. \u00A1Entonces la meteorizaci\u00F3n empieza el ciclo otra vez!", "El levantamiento tarda millones de a\u00F1os; por eso este ciclo es tan lento."],
+    ['Por qu\u00E9 es importante', ul(["El f\u00F3sforo est\u00E1 en tu <b>ADN</b>, el <b>ATP</b> (energ\u00EDa de las c\u00E9lulas), las <b>membranas celulares</b>, los <b>huesos y los dientes</b>.", "Se extrae de minas para hacer <b>fertilizante</b>. \u00A1El <b>Bone Valley</b> (Valle de los Huesos), en el centro de Florida, es una de las zonas de miner\u00EDa de fosfato m\u00E1s grandes del mundo!", "Demasiada escorrent\u00EDa de fosfato causa <b>proliferaci\u00F3n de algas</b> en lagos y r\u00EDos."])]
+  ],
+  quiz: [
+    ['\u00BFQu\u00E9 hace que el ciclo del f\u00F3sforo sea diferente de los otros tres ciclos?', ['No tiene una etapa gaseosa en la atm\u00F3sfera', 'Es el ciclo m\u00E1s r\u00E1pido', 'Solo ocurre en el oc\u00E9ano', 'Lo impulsan los rayos'], 'El f\u00F3sforo no forma un gas com\u00FAn, as\u00ED que no pasa por la atm\u00F3sfera.'],
+    ['El fosfato se libera de las rocas principalmente por:', ['Meteorizaci\u00F3n', 'Combusti\u00F3n', 'Transpiraci\u00F3n', 'Nitrificaci\u00F3n'], 'La meteorizaci\u00F3n rompe las rocas y libera fosfato.'],
+    ['\u00BFCu\u00E1l de estos contiene f\u00F3sforo?', ['El ADN y el ATP', 'El agua (H\u2082O)', 'El di\u00F3xido de carbono (CO\u2082)', 'El gas nitr\u00F3geno (N\u2082)'], 'El ADN y el ATP tienen grupos fosfato.'],
+    ['Los organismos muertos devuelven el fosfato al suelo con la ayuda de:', ['Bacterias del suelo (descomponedores)', 'La fotos\u00EDntesis', 'La evaporaci\u00F3n', 'Los rayos'], 'Los descomponedores degradan la materia muerta y liberan fosfato.'],
+    ['Las rocas del fondo del mar se convierten en tierra nueva por:', ['Levantamiento de rocas', 'Escorrent\u00EDa', 'Condensaci\u00F3n', 'Respiraci\u00F3n'], 'Los movimientos de las placas levantan las rocas durante millones de a\u00F1os.'],
+    ['\u00BFC\u00F3mo obtienen f\u00F3sforo los animales?', ['Comiendo plantas u otros animales', 'Respir\u00E1ndolo', 'Absorbi\u00E9ndolo de las rocas por la piel', 'De la lluvia'], 'El f\u00F3sforo pasa por la cadena alimentaria.'],
+    ['El centro de Florida (Bone Valley) es famoso por la miner\u00EDa de:', ['Fosfato', 'Oro', 'Carb\u00F3n', 'Diamantes'], 'Florida es un gran productor de fosfato, sobre todo para fertilizantes.'],
+    ['Demasiado fertilizante de fosfato que llega a un lago causa:', ['Proliferaci\u00F3n de algas (eutrofizaci\u00F3n)', 'Acidificaci\u00F3n del oc\u00E9ano', 'M\u00E1s rayos', 'Sublimaci\u00F3n'], 'Los nutrientes extra alimentan la proliferaci\u00F3n de algas, que gastan el ox\u00EDgeno cuando mueren.']
+  ]
+}
+};
+
+/* Returns the cycle in the current language (English data is the base). */
+function loc(c) {
+  var e = ES[c.id];
+  if (LANG !== 'es' || !e) return c;
+  var o = {}, k, i, s, t, z;
+  for (k in c) { if (c.hasOwnProperty(k)) o[k] = c[k]; }
+  o.name = e.name; o.sub = e.sub; o.bank = e.bank;
+  o.slots = [];
+  for (i = 0; i < c.slots.length; i++) { s = c.slots[i]; o.slots.push({ n: s.n, x: s.x, y: s.y, w: (e.wide && e.wide[s.n]) || s.w, h: s.h, a: e.slots[i] }); }
+  o.steps = [];
+  for (i = 0; i < c.steps.length; i++) {
+    s = c.steps[i]; t = {};
+    for (k in s) { if (s.hasOwnProperty(k)) t[k] = s[k]; }
+    z = e.steps[i]; t.t = z[0]; t.d = z[1]; if (s.x) t.x = z[2]; t.en = s.t;
+    o.steps.push(t);
+  }
+  o.quiz = [];
+  for (i = 0; i < e.quiz.length; i++) o.quiz.push({ q: e.quiz[i][0], a: e.quiz[i][1], e: e.quiz[i][2] });
+  return o;
 }
 
 /* ---------- SOUND ---------- */
@@ -607,15 +830,28 @@ function show(id) {
 }
 
 /* Login */
+function applyLang() {
+  var els = document.querySelectorAll('[data-t]'), i, o, sel = $('inPer'), v = sel.value;
+  for (i = 0; i < els.length; i++) els[i].innerHTML = L(els[i].getAttribute('data-t'));
+  $('inName').placeholder = L('namePh');
+  document.documentElement.lang = LANG; document.title = L('docTitle');
+  sel.innerHTML = '';
+  o = document.createElement('option'); o.value = ''; o.text = L('perC'); sel.appendChild(o);
+  for (i = 1; i <= 8; i++) { o = document.createElement('option'); o.value = String(i); o.text = L('perN') + i; sel.appendChild(o); }
+  sel.value = v;
+  els = document.querySelectorAll('.lb');
+  for (i = 0; i < els.length; i++) els[i].className = 'btn small lb' + (els[i].getAttribute('data-l') === LANG ? ' on' : '');
+}
 (function () {
-  var sel = $('inPer'), i, o;
-  for (i = 1; i <= 8; i++) { o = document.createElement('option'); o.value = String(i); o.text = 'Period ' + i; sel.appendChild(o); }
+  var b = document.querySelectorAll('.lb'), i;
+  for (i = 0; i < b.length; i++) b[i].onclick = function () { LANG = this.getAttribute('data-l'); S.lang = LANG; save(); $('loginErr').innerHTML = ''; sTap(); applyLang(); };
 })();
+applyLang();
 $('btnStart').onclick = function () {
   var n = $('inName').value.replace(/^\s+|\s+$/g, ''), p = $('inPer').value;
-  if (n.length < 2 || n.indexOf(' ') < 0) { $('loginErr').innerHTML = 'Please type your first AND last name.'; sBad(); return; }
-  if (!p) { $('loginErr').innerHTML = 'Please choose your class period.'; sBad(); return; }
-  S.name = n; S.per = p; save(); sGood(); renderHub(); show('s_hub');
+  if (n.length < 2 || n.indexOf(' ') < 0) { $('loginErr').innerHTML = L('errName'); sBad(); return; }
+  if (!p) { $('loginErr').innerHTML = L('errPer'); sBad(); return; }
+  S.name = n; S.per = p; S.lang = LANG; save(); sGood(); renderHub(); show('s_hub');
 };
 
 /* Hub */
@@ -624,21 +860,21 @@ function allDone() { var i; for (i = 0; i < CY.length; i++) { if (!cs(CY[i].id).
 function renderHub() {
   var h = '', i, c, st;
   for (i = 0; i < CY.length; i++) {
-    c = CY[i]; st = cs(c.id);
+    c = loc(CY[i]); st = cs(c.id);
     h += '<button class="cc" style="border-color:' + c.col + '" onclick="openCycle(' + i + ')"><div class="ic">' + c.icon + '</div><h3 style="color:' + c.col + '">' + c.name + '</h3><div class="st">' +
-      (st.learn ? '&#x2705;' : '<i>&#x2B1C;</i>') + ' Learn<br>' +
-      (st.lab ? '&#x2705;' : '<i>&#x2B1C;</i>') + ' Label<br>' +
-      (st.quiz ? '&#x2705; Quiz ' + st.qFirst + '/' + st.qTot : '<i>&#x2B1C;</i> Quiz') + '</div></button>';
+      (st.learn ? '&#x2705;' : '<i>&#x2B1C;</i>') + ' ' + L('learn') + '<br>' +
+      (st.lab ? '&#x2705;' : '<i>&#x2B1C;</i>') + ' ' + L('label') + '<br>' +
+      (st.quiz ? '&#x2705; ' + L('quiz') + ' ' + st.qFirst + '/' + st.qTot : '<i>&#x2B1C;</i> ' + L('quiz')) + '</div></button>';
   }
   $('hubGrid').innerHTML = h;
   $('btnReport').disabled = !allDone();
-  $('btnReport').innerHTML = allDone() ? '&#x1F4C4; Get My Report' : '&#x1F512; Report unlocks after all 4 quizzes';
-  switchArm = false; $('btnSwitch').innerHTML = 'Not you? Change student';
+  $('btnReport').innerHTML = allDone() ? L('rep') : L('repLock');
+  switchArm = false; $('btnSwitch').innerHTML = L('sw');
 }
 $('btnReport').onclick = function () { if (allDone()) { if (!S.doneAt) { S.doneAt = Date.now(); save(); } renderReport(); show('s_report'); sWin(); } };
 $('btnSwitch').onclick = function () {
-  if (!switchArm) { switchArm = true; this.innerHTML = 'Tap again to ERASE progress and change student'; return; }
-  S = { name: '', per: '', c: {}, doneAt: 0 }; save(); $('inName').value = ''; $('inPer').value = ''; show('s_login');
+  if (!switchArm) { switchArm = true; this.innerHTML = L('sw2'); return; }
+  S = { name: '', per: '', c: {}, doneAt: 0, lang: LANG }; save(); $('inName').value = ''; $('inPer').value = ''; show('s_login');
 };
 
 /* ---------- CYCLE SCREEN ---------- */
@@ -647,7 +883,7 @@ var parts = [], animOn = false, lastTs = 0;
 
 function openCycle(i) {
   sTap();
-  cur = CY[i]; revealed = {}; zoomed = false;
+  cur = loc(CY[i]); revealed = {}; zoomed = false;
   var st = cs(cur.id), k;
   if (st.learn) { for (k = 0; k < cur.slots.length; k++) revealed[cur.slots[k].n] = 1; }
   $('cTitle').innerHTML = '<span style="color:' + cur.col + '">' + cur.icon + ' ' + cur.name + '</span>';
@@ -672,22 +908,31 @@ function buildDiagram() {
   for (i = 0; i < els.length; i++) { els[i].onclick = slotTap; }
   $('dia').style.width = zoomed ? '175%' : '100%';
   $('btnZoom').style.display = 'block';
-  $('btnZoom').innerHTML = zoomed ? '&#x1F50D; Fit' : '&#x1F50D; Zoom';
+  $('btnZoom').innerHTML = zoomed ? L('fit') : L('zoom');
   fit();
 }
 $('btnZoom').onclick = function () {
   zoomed = !zoomed; $('dia').style.width = zoomed ? '175%' : '100%';
-  this.innerHTML = zoomed ? '&#x1F50D; Fit' : '&#x1F50D; Zoom'; fit(); sTap();
+  this.innerHTML = zoomed ? L('fit') : L('zoom'); fit(); sTap();
 };
-function fit() { if (!cur) return; var w = $('dia').clientWidth || 340; $('ov').style.fontSize = (w / cur.W * 8.3) + 'px'; }
+function fit() { if (!cur) return; var w = $('dia').clientWidth || 340; $('ov').style.fontSize = (w / cur.W * 8.3) + 'px'; fitSlots(); }
+/* shrink any slot text that does not fit its box (Spanish words run longer) */
+function fitSlots() {
+  var els = $('ov') ? $('ov').getElementsByClassName('slot') : [], i, el, f;
+  for (i = 0; i < els.length; i++) {
+    el = els[i]; el.style.fontSize = ''; f = 1;
+    if (!el.clientWidth) continue;
+    while (f > 0.5 && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)) { f -= 0.05; el.style.fontSize = f + 'em'; }
+  }
+}
 window.addEventListener('resize', fit);
 
 function setMode(m) {
   var st = cs(cur.id);
-  if (m === 'label' && !st.learn) { toast('Finish Learn first!'); sBad(); return; }
-  if (m === 'quiz' && !st.lab) { toast('Finish Label first!'); sBad(); return; }
+  if (m === 'label' && !st.learn) { toast(L('needLearn')); sBad(); return; }
+  if (m === 'quiz' && !st.lab) { toast(L('needLabel')); sBad(); return; }
   mode = m;
-  var tabs = [['learn', '1. Learn', true], ['label', '2. Label', st.learn], ['quiz', '3. Quiz', st.lab]], h = '', i, on;
+  var tabs = [['learn', L('tLearn'), true], ['label', L('tLabel'), st.learn], ['quiz', L('tQuiz'), st.lab]], h = '', i, on;
   for (i = 0; i < 3; i++) {
     on = tabs[i][0] === m;
     h += '<button class="tab' + (tabs[i][2] ? '' : ' lock') + '" style="' + (on ? 'background:' + cur.col + ';color:#06102a;border-color:' + cur.col : '') + '" onclick="setMode(\'' + tabs[i][0] + '\')">' + (tabs[i][2] ? '' : '&#x1F512; ') + tabs[i][1] + '</button>';
@@ -751,22 +996,24 @@ function renderLearn() {
     el.innerHTML = '<b>' + sl.n + '.</b>' + (revealed[sl.n] ? esc(sl.a) : '');
     el.className = 'slot' + (revealed[sl.n] ? ' rev' : '') + (hot[sl.n] ? ' hot' : '');
   }
+  fitSlots();
   setFlows(s.f);
-  h += '<div class="stepn">LEARN &bull; ' + (stepI + 1) + ' of ' + cur.steps.length + '</div><div class="dots">';
+  h += '<div class="stepn">' + Lf('learnN', stepI + 1, cur.steps.length) + '</div><div class="dots">';
   for (i = 0; i < cur.steps.length; i++) h += '<div class="dot' + (i <= stepI ? ' on' : '') + '" style="' + (i === stepI ? 'background:' + cur.col : '') + '"></div>';
   h += '</div>';
   h += '<div class="term" style="color:' + cur.col + '">' + (s.why ? '&#x1F30E; ' : '') + s.t + '</div>';
-  if (s.s) { for (i = 0; i < s.s.length; i++) h += '<span class="wb">Worksheet box #' + s.s[i] + '</span>'; }
-  else if (!s.why && stepI > 0) h += '<span class="wb" style="background:#2c3d80">Bonus term</span>';
+  if (s.en && L('enTerm') && stepI > 0 && !s.why) h += '<div class="ent">' + L('enTerm') + '<b>' + s.en + '</b></div>';
+  if (s.s) { for (i = 0; i < s.s.length; i++) h += '<span class="wb">' + L('box') + s.s[i] + '</span>'; }
+  else if (!s.why && stepI > 0) h += '<span class="wb" style="background:#2c3d80">' + L('bonus') + '</span>';
   h += '<div class="def' + (s.why ? ' why' : '') + '">' + s.d + '</div>';
   if (s.x) h += '<div class="dyk" style="border-color:' + cur.col + '"><b>&#x1F4A1; </b>' + s.x + '</div>';
-  h += '<div class="row" style="margin-top:12px"><button class="btn ghost" id="lPrev"' + (stepI === 0 ? ' disabled' : '') + '>&larr; Back</button>';
-  h += '<button class="btn" id="lNext" style="background:' + cur.col + '">' + (last ? 'Done! Go Label &rarr;' : 'Next &rarr;') + '</button></div>';
+  h += '<div class="row" style="margin-top:12px"><button class="btn ghost" id="lPrev"' + (stepI === 0 ? ' disabled' : '') + '>' + L('back') + '</button>';
+  h += '<button class="btn" id="lNext" style="background:' + cur.col + '">' + (last ? L('goLabel') : L('next')) + '</button></div>';
   $('panel').innerHTML = h;
   $('lPrev').onclick = function () { if (stepI > 0) { stepI--; sTap(); renderLearn(); scrollPanel(); } };
   $('lNext').onclick = function () {
     if (!last) { stepI++; sTap(); renderLearn(); scrollPanel(); return; }
-    var st = cs(cur.id); st.learn = true; save(); sGood(); toast('Learn complete! Now label the diagram.'); setMode('label');
+    var st = cs(cur.id); st.learn = true; save(); sGood(); toast(L('learnDone')); setMode('label');
   };
 }
 function scrollPanel() { var y = $('diabox').getBoundingClientRect().top + window.pageYOffset - 8; if (window.pageYOffset > y) window.scrollTo(0, y); }
@@ -790,19 +1037,20 @@ function renderSlotsLabel(res) {
     if (sel && !(res && placed[sl.n] === sl.a)) cls += ' tgt';
     el.className = cls;
   }
+  fitSlots();
 }
 function renderLabelPanel(msg) {
   var st = cs(cur.id), h = '', i;
-  h += '<div class="stepn">LABEL THE ' + cur.name.toUpperCase() + '</div>';
-  h += '<div class="hint" style="margin:4px 0 2px">Tap a word, then tap its box on the diagram. Tap a filled box to clear it. ' + (cur.id === 'water' ? '<b>One word is used twice.</b>' : (cur.id === 'nitrogen' ? '<b>One word is used twice.</b>' : '')) + ' Use the <b>Zoom</b> button if the boxes are small.</div>';
+  h += '<div class="stepn">' + L('labelT') + cur.name.toUpperCase() + '</div>';
+  h += '<div class="hint" style="margin:4px 0 2px">' + L('labelH') + ' ' + ((cur.id === 'water' || cur.id === 'nitrogen') ? L('twice') : '') + ' ' + L('zoomTip') + '</div>';
   h += '<div class="bank">';
   for (i = 0; i < cur.bank.length; i++) h += '<button class="w' + (sel === cur.bank[i] ? ' sel' : '') + '" data-i="' + i + '">' + esc(cur.bank[i]) + '</button>';
   h += '</div>';
   if (msg) h += '<div class="fb">' + msg + '</div>';
   if (st.lab && checked === 'done') {
-    h += '<button class="btn" id="goQuiz" style="background:' + cur.col + '">Go to the Quiz &rarr;</button>';
+    h += '<button class="btn" id="goQuiz" style="background:' + cur.col + '">' + L('goQuiz') + '</button>';
   } else {
-    h += '<div class="row"><button class="btn ghost" id="lbReset">Clear</button><button class="btn" id="lbCheck" style="background:' + cur.col + '">Check My Labels</button></div>';
+    h += '<div class="row"><button class="btn ghost" id="lbReset">' + L('clear') + '</button><button class="btn" id="lbCheck" style="background:' + cur.col + '">' + L('check') + '</button></div>';
   }
   $('panel').innerHTML = h;
   var ws = $('panel').getElementsByClassName('w');
@@ -821,28 +1069,28 @@ function slotTap() {
   if (mode !== 'label') { var s = slotByN(n); if (s && revealed[n]) toast(n + '. ' + esc(s.a)); return; }
   if (checked === 'done') return;
   var sl = slotByN(n);
-  if (checked === true && placed[n] === sl.a) { toast('That one is already correct!'); return; }
+  if (checked === true && placed[n] === sl.a) { toast(L('already')); return; }
   if (sel) { placed[n] = sel; sel = null; sTap(); }
   else if (placed[n]) { delete placed[n]; sTap(); }
-  else { toast('Tap a word first'); return; }
+  else { toast(L('tapWord')); return; }
   checked = checked === true ? true : false;
   renderSlotsLabel(checked === true); renderLabelPanel();
 }
 function checkLabels() {
   var st = cs(cur.id), i, ok = 0, filled = 0, sl;
   for (i = 0; i < cur.slots.length; i++) { sl = cur.slots[i]; if (placed[sl.n]) filled++; if (placed[sl.n] === sl.a) ok++; }
-  if (filled < cur.slots.length) { toast('Fill every box first (' + filled + '/' + cur.slots.length + ')'); sBad(); return; }
+  if (filled < cur.slots.length) { toast(Lf('fillAll', filled, cur.slots.length)); sBad(); return; }
   if (st.labOk < 0) { st.labOk = ok; st.labN = cur.slots.length; save(); }
   sel = null;
   if (ok === cur.slots.length) {
     st.lab = true; save(); checked = 'done'; sWin();
     renderSlotsLabel(true);
-    renderLabelPanel('&#x1F389; <b>All ' + ok + ' correct!</b> Copy these onto your paper worksheet now.');
-    toast('Perfect labels!');
+    renderLabelPanel(Lf('allOk', ok));
+    toast(L('perfect'));
   } else {
     checked = true; sBad();
     renderSlotsLabel(true);
-    renderLabelPanel('<b>' + ok + ' of ' + cur.slots.length + ' correct.</b> Fix the <span style="color:#ff6b8b">red</span> boxes and check again. Tip: look at where the arrows point.');
+    renderLabelPanel(Lf('someOk', ok, cur.slots.length));
   }
 }
 
@@ -861,10 +1109,10 @@ function renderQ() {
     var tot = cur.quiz.length, firstTime = !st.quiz;
     if (firstTime) { st.quiz = true; st.qFirst = Q.first; st.qTot = tot; save(); }
     sWin();
-    h += '<div class="stepn">QUIZ COMPLETE</div><div class="big" style="color:' + cur.col + '">' + Q.first + ' / ' + tot + '</div>';
-    h += '<div class="hint" style="text-align:center">correct on the first try' + (firstTime ? '' : '<br>(Practice round. Your report keeps your first score: ' + st.qFirst + '/' + st.qTot + ')') + '</div>';
-    h += '<button class="btn" id="qHub" style="background:' + cur.col + '">' + (allDone() ? '&#x1F4C4; All cycles done! Get my report' : 'Back to the Cycles &rarr;') + '</button>';
-    h += '<button class="btn ghost" id="qAgain">Practice again</button>';
+    h += '<div class="stepn">' + L('qDone') + '</div><div class="big" style="color:' + cur.col + '">' + Q.first + ' / ' + tot + '</div>';
+    h += '<div class="hint" style="text-align:center">' + L('firstTry') + (firstTime ? '' : '<br>' + Lf('practice', st.qFirst, st.qTot)) + '</div>';
+    h += '<button class="btn" id="qHub" style="background:' + cur.col + '">' + (allDone() ? L('allDoneBtn') : L('backHub')) + '</button>';
+    h += '<button class="btn ghost" id="qAgain">' + L('again') + '</button>';
     $('panel').innerHTML = h;
     $('qHub').onclick = function () { if (allDone()) { $('btnReport').onclick(); } else { renderHub(); show('s_hub'); } };
     $('qAgain').onclick = startQuiz;
@@ -874,8 +1122,8 @@ function renderQ() {
   for (i = 0; i < q.a.length; i++) opts.push(i);
   shuffle(opts);
   Q.answered = false; Q.opts = opts;
-  h += '<div class="stepn">QUIZ &bull; ' + Q.done + ' of ' + cur.quiz.length + ' mastered &bull; first-try correct: ' + Q.first + '</div>';
-  if (Q.seen[qi]) h += '<div class="wb" style="background:#2c3d80;margin-top:6px">Try this one again</div>';
+  h += '<div class="stepn">' + Lf('qHead', Q.done, cur.quiz.length, Q.first) + '</div>';
+  if (Q.seen[qi]) h += '<div class="wb" style="background:#2c3d80;margin-top:6px">' + L('retry') + '</div>';
   h += '<div class="q">' + q.q + '</div>';
   for (i = 0; i < opts.length; i++) h += '<button class="opt" data-o="' + opts[i] + '">' + q.a[opts[i]] + '</button>';
   h += '<div id="qfb"></div>';
@@ -894,16 +1142,18 @@ function answerQ() {
     this.className = 'opt bad'; Q.queue.push(Q.queue.shift()); sBad();
   }
   Q.seen[qi] = true;
-  $('qfb').innerHTML = '<div class="fb"><b style="color:' + (ok ? '#2bff7a' : '#ff6b8b') + '">' + (ok ? 'Correct!' : 'Not quite. This question will come back.') + '</b><br>' + q.e + '</div><button class="btn" id="qNext" style="background:' + cur.col + '">Next &rarr;</button>';
+  $('qfb').innerHTML = '<div class="fb"><b style="color:' + (ok ? '#2bff7a' : '#ff6b8b') + '">' + (ok ? L('correct') : L('notQuite')) + '</b><br>' + q.e + '</div><button class="btn" id="qNext" style="background:' + cur.col + '">' + L('next') + '</button>';
   $('qNext').onclick = renderQ;
 }
 
 /* ---------- REPORT ---------- */
 function fmtTime(ms) {
-  var d = new Date(ms), m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var h = d.getHours(), ap = h >= 12 ? 'PM' : 'AM', mi = d.getMinutes();
+  var d = new Date(ms), m = L('months');
+  var h = d.getHours(), ap = h >= 12 ? L('pm') : L('am'), mi = d.getMinutes(), hm;
   h = h % 12; if (h === 0) h = 12;
-  return m[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + ' ' + h + ':' + (mi < 10 ? '0' : '') + mi + ' ' + ap;
+  hm = h + ':' + (mi < 10 ? '0' : '') + mi + ' ' + ap;
+  if (LANG === 'es') return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear() + ', ' + hm;
+  return m[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + ' ' + hm;
 }
 function totals() {
   var i, st, a = 0, b = 0;
@@ -912,46 +1162,47 @@ function totals() {
 }
 function renderReport() {
   var h = '', i, st, t = totals(), now = Date.now();
-  h += '<div class="ph"><b>THE BIOGEOCHEMICAL CYCLES</b><span>Review Completion Report</span></div><div class="pb">';
-  h += '<div class="info"><b>Name:</b> ' + esc(S.name) + '<br><b>Period:</b> ' + esc(S.per) + '<br><b>Completed:</b> ' + fmtTime(S.doneAt) + '<br><b>Report time:</b> ' + fmtTime(now) + '</div>';
-  h += '<table><tr><th>Cycle</th><th>Learn</th><th>Label<br>1st check</th><th>Quiz<br>1st try</th></tr>';
+  h += '<div class="ph"><b>' + L('rTitle') + '</b><span>' + L('rSub') + '</span></div><div class="pb">';
+  h += '<div class="info"><b>' + L('rName') + '</b> ' + esc(S.name) + '<br><b>' + L('rPer') + '</b> ' + esc(S.per) + '<br><b>' + L('rComp') + '</b> ' + fmtTime(S.doneAt) + '<br><b>' + L('rTime') + '</b> ' + fmtTime(now) + (LANG === 'es' ? '<br><b>' + L('rLang') + '</b> ' + L('langName') : '') + '</div>';
+  h += '<table><tr><th>' + L('thCycle') + '</th><th>' + L('thLearn') + '</th><th>' + L('thLabel') + '</th><th>' + L('thQuiz') + '</th></tr>';
   for (i = 0; i < CY.length; i++) {
     st = cs(CY[i].id);
-    h += '<tr><td style="text-align:left"><b>' + CY[i].name + '</b></td><td>' + (st.learn ? '&#x2714;' : '-') + '</td><td>' + (st.labOk >= 0 ? st.labOk + '/' + st.labN : '-') + '</td><td><b>' + st.qFirst + '/' + st.qTot + '</b></td></tr>';
+    h += '<tr><td style="text-align:left"><b>' + loc(CY[i]).name + '</b></td><td>' + (st.learn ? '&#x2714;' : '-') + '</td><td>' + (st.labOk >= 0 ? st.labOk + '/' + st.labN : '-') + '</td><td><b>' + st.qFirst + '/' + st.qTot + '</b></td></tr>';
   }
-  h += '</table><div class="tot">Total quiz score (first try): ' + t[0] + ' / ' + t[1] + ' (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)</div>';
-  h += '<div class="ft">All four cycles completed: Learn, Label (all correct) and Quiz (all mastered).</div></div>';
+  h += '</table><div class="tot">' + L('total') + ' ' + t[0] + ' / ' + t[1] + ' (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)</div>';
+  h += '<div class="ft">' + L('rFoot') + '</div></div>';
   $('page').innerHTML = h;
 }
 
 /* Minimal one-page PDF writer (Helvetica, no libraries) */
-function pdfStr(s) { return String(s).replace(/[^\x20-\x7E]/g, '?').replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
+function pdfStr(s) { return String(s).replace(/[^\x20-\x7E\xA0-\xFF]/g, '?').replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)'); }
 function makePdf() {
-  var c = [], t = totals(), i, st, y;
+  var c = [], t = totals(), i, st, y, vx = LANG === 'es' ? 175 : 130;
   function txt(x, yy, s, sz, bold, col) { c.push((col || '0 0 0') + ' rg BT /' + (bold ? 'F2' : 'F1') + ' ' + sz + ' Tf ' + x + ' ' + yy + ' Td (' + pdfStr(s) + ') Tj ET'); }
   function rect(x, yy, w, h, col, stroke) { c.push((stroke ? col + ' RG 0.8 w ' : col + ' rg ') + x + ' ' + yy + ' ' + w + ' ' + h + ' re ' + (stroke ? 'S' : 'f')); }
   rect(0, 700, 612, 92, '0.07 0.11 0.25');
-  txt(40, 752, 'THE BIOGEOCHEMICAL CYCLES', 24, 1, '1 1 1');
-  txt(40, 726, 'Review Completion Report - Water, Carbon, Nitrogen, Phosphorus', 12, 0, '0.62 0.85 1');
-  txt(40, 660, 'Name:', 14, 1); txt(130, 660, S.name, 14, 0);
-  txt(40, 638, 'Period:', 14, 1); txt(130, 638, S.per, 14, 0);
-  txt(40, 616, 'Completed:', 14, 1); txt(130, 616, fmtTime(S.doneAt), 14, 0);
-  txt(40, 594, 'Report time:', 14, 1); txt(130, 594, fmtTime(Date.now()), 14, 0);
+  txt(40, 752, L('rTitle'), 24, 1, '1 1 1');
+  txt(40, 726, L('pSub'), 12, 0, '0.62 0.85 1');
+  txt(40, 660, L('rName'), 14, 1); txt(vx, 660, S.name, 14, 0);
+  txt(40, 638, L('rPer'), 14, 1); txt(vx, 638, S.per, 14, 0);
+  txt(40, 616, L('rComp'), 14, 1); txt(vx, 616, fmtTime(S.doneAt), 14, 0);
+  txt(40, 594, L('rTime'), 14, 1); txt(vx, 594, fmtTime(Date.now()), 14, 0);
+  if (LANG === 'es') { txt(40, 574, L('rLang'), 14, 1); txt(vx, 574, L('langName'), 14, 0); }
   y = 540;
   rect(40, y, 532, 26, '0.91 0.93 0.99');
-  txt(50, y + 9, 'Cycle', 12, 1); txt(250, y + 9, 'Learn', 12, 1); txt(340, y + 9, 'Label (1st check)', 12, 1); txt(470, y + 9, 'Quiz (1st try)', 12, 1);
+  txt(50, y + 9, L('thCycle'), 12, 1); txt(250, y + 9, L('thLearn'), 12, 1); txt(340, y + 9, L('pLabel'), LANG === 'es' ? 11 : 12, 1); txt(470, y + 9, L('pQuiz'), LANG === 'es' ? 11 : 12, 1);
   for (i = 0; i < CY.length; i++) {
     st = cs(CY[i].id); y -= 26;
     rect(40, y, 532, 26, '0.5 0.5 0.5', 1);
-    txt(50, y + 9, CY[i].name, 12, 1);
-    txt(255, y + 9, st.learn ? 'Done' : '-', 12, 0);
+    txt(50, y + 9, loc(CY[i]).name, 12, 1);
+    txt(255, y + 9, st.learn ? L('pDone') : '-', 12, 0);
     txt(370, y + 9, st.labOk >= 0 ? (st.labOk + '/' + st.labN) : '-', 12, 0);
     txt(495, y + 9, st.qFirst + '/' + st.qTot, 12, 1);
   }
   rect(40, 540, 532, 26, '0.5 0.5 0.5', 1);
-  txt(40, y - 34, 'Total quiz score (first try): ' + t[0] + ' / ' + t[1] + '  (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)', 15, 1);
-  txt(40, y - 58, 'All four cycles completed: Learn, Label (all correct) and Quiz (all questions mastered).', 11, 0, '0.3 0.3 0.3');
-  txt(40, 60, 'Submit this report on Canvas.', 11, 0, '0.3 0.3 0.3');
+  txt(40, y - 34, L('total') + ' ' + t[0] + ' / ' + t[1] + '  (' + Math.round(t[0] / Math.max(1, t[1]) * 100) + '%)', 15, 1);
+  txt(40, y - 58, L('pFoot'), 11, 0, '0.3 0.3 0.3');
+  txt(40, 60, L('pSubmit'), 11, 0, '0.3 0.3 0.3');
   var stream = c.join('\n');
   var objs = [
     '<< /Type /Catalog /Pages 2 0 R >>',
@@ -971,12 +1222,14 @@ function makePdf() {
 }
 $('btnPdf').onclick = function () {
   try {
-    var data = makePdf(), blob = new Blob([data], { type: 'application/pdf' }), url = URL.createObjectURL(blob);
+    var data = makePdf(), bytes = new Uint8Array(data.length), bi;
+    for (bi = 0; bi < data.length; bi++) bytes[bi] = data.charCodeAt(bi) & 255;
+    var blob = new Blob([bytes], { type: 'application/pdf' }), url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url; a.download = 'BiogeochemicalCycles_' + S.name.replace(/[^A-Za-z0-9]+/g, '_') + '_P' + S.per + '.pdf';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     sGood();
-  } catch (e) { toast('Could not make the PDF. Take a screenshot instead!'); }
+  } catch (e) { toast(L('pdfErr')); }
 };
 
 /* ---------- BOOT ---------- */
